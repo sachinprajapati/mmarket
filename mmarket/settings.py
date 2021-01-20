@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'users',
     'products',
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'django_extensions',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -125,7 +127,7 @@ AUTH_USER_MODEL = 'users.User'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
-MEDIA_URL = '/media/'
+MEDIA_URL = '/mmarket/media/'
 
 
 REST_FRAMEWORK = {
@@ -137,5 +139,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
         'rest_framework.permissions.IsAuthenticated',
-    ]
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }

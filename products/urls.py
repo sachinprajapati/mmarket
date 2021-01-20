@@ -10,5 +10,7 @@ from .views import *
 urlpatterns = [
 	# path('', include(router.urls)),
     path('category/', CategoryViewSet.as_view()),
-    path('category/<int:parent_id>/', CategoryViewSet.as_view())
+    path('category/<int:parent_id>/', CategoryViewSet.as_view()),
+    path('products/', ProductViewSet.as_view()),
+    path('product/<int:pk>/', ProductDetailViewSet.as_view()),
 ]
