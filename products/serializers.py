@@ -28,7 +28,7 @@ class ListProductSerializer(serializers.ModelSerializer):
 	first_image = serializers.URLField()
 	class Meta:
 	    model = Product
-	    fields = ('id', 'name', 'mrp', 'price', 'first_image')
+	    fields = ('id', 'name', 'mrp', 'price', 'first_image', 'is_discountable')
 
 class DetailProductSerializer(serializers.ModelSerializer):
 	images = ProductImageSerializer(read_only=True, many=True)

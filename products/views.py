@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import permissions, status, viewsets, generics, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import LimitOffsetPagination
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, NumberFilter, CharFilter
 
 from .models import *
@@ -27,7 +28,7 @@ class ProductFilter(FilterSet):
 
 	class Meta:
 		model = Product
-		fields = ['categories', 'title', 'price', 'min_price', 'max_price']
+		fields = ['categories', 'title', 'price', 'min_price', 'max_price', 'is_discountable']
 
 class ProductViewSet(generics.ListAPIView):
 	model = Product
@@ -36,6 +37,7 @@ class ProductViewSet(generics.ListAPIView):
 	permission_classes = [permissions.AllowAny]
 	filterset_class = ProductFilter
 	filter_backends = (DjangoFilterBackend, filters.OrderingFilter,)
+	pagination_class = LimitOffsetPagination
 
 class ProductDetailViewSet(generics.RetrieveAPIView):
 	model = Product
