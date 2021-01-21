@@ -1,10 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 
-from rest_framework import permissions, status, viewsets, generics
+from rest_framework import permissions, status, viewsets, generics, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django_filters.rest_framework import DjangoFilterBackend, FilterSet, NumberFilter
-from django_filters.rest_framework import CharFilter
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, NumberFilter, CharFilter
 
 from .models import *
 from .serializers import *
@@ -24,11 +23,11 @@ class CategoryViewSet(generics.ListAPIView):
 class ProductFilter(FilterSet):
 	min_price = NumberFilter(field_name="price", lookup_expr='gte')
 	max_price = NumberFilter(field_name="price", lookup_expr='lte')
-	name = CharFilter(lookup_expr='contains')
+	title = CharFilter(lookup_expr='contains')
 
 	class Meta:
 		model = Product
-		fields = ['categories', 'name', 'price', 'min_price', 'max_price']
+		fields = ['categories', 'title', 'price', 'min_price', 'max_price']
 
 class ProductViewSet(generics.ListAPIView):
 	model = Product
@@ -36,6 +35,7 @@ class ProductViewSet(generics.ListAPIView):
 	serializer_class = ListProductSerializer
 	permission_classes = [permissions.AllowAny]
 	filterset_class = ProductFilter
+	filter_backends = (DjangoFilterBackend, filters.OrderingFilter,)
 
 class ProductDetailViewSet(generics.RetrieveAPIView):
 	model = Product

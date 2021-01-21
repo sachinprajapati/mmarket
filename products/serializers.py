@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 
 from .models import *
 
-
 class CategorySerializer(serializers.ModelSerializer):
 	class Meta:
 	    model = Category
@@ -15,7 +14,7 @@ class ProductAttributeSerializer(serializers.ModelSerializer):
 		model = ProductAttribute
 		fields = ('name', 'code', 'set_value')
 
-class ProductAttributeValueSerializer(serializers.ModelSerializer):
+class ProductValueSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ProductAttributeValue
 		fields = '__all__'
