@@ -2,8 +2,10 @@ from django.db import models
 
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser, PermissionsMixin)
 from django.core.validators import RegexValidator
-
+from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
+
+from basket.models import Cart
 
 class MyUserManager(BaseUserManager):
     def create_user(self, phone, name, password=None):
@@ -58,3 +60,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 	    "Does the user have permissions to view the app `app_label`?"
 	    # Simplest possible answer: Yes, always
 	    return True
+
+def create_cart(sender, instance, created, **kwargs):
+    if created:
+        c = Cart(user=instance)
+        c.save()
+
+post_save.connect(create_cart, sender=User)
