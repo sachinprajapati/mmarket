@@ -52,8 +52,8 @@ class ProductDetailViewSet(generics.RetrieveAPIView):
 	def retrieve(self, request, *args, **kwargs):
 		product = self.get_object()
 		serializer = DetailProductSerializer(product)
-		if request.user.is_authenticated:
-			response_data = {"cart_count": CartLine.objects.filter(product=product, cart=request.user.cart).count()}
+		if request.user.is_authenticated and CartLine.objects.filter(product=product, cart=request.user.cart).exists():
+			response_data = {"cart_count": CartLine.objects.get(product=product, cart=request.user.cart).quantity}
 			response_data.update(serializer.data)
 			return Response(response_data, status=status.HTTP_200_OK)
 		return Response(serializer.data, status=status.HTTP_200_OK)
