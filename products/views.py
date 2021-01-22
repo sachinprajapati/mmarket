@@ -7,6 +7,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, NumberFilter, CharFilter
 
 from .models import *
+from basket.models import CartLine
 from .serializers import *
 
 class CategoryViewSet(generics.ListAPIView):
@@ -47,3 +48,12 @@ class ProductDetailViewSet(generics.RetrieveAPIView):
 	def get_object(self):
 		if self.kwargs.get('pk'):
 			return get_object_or_404(self.model, pk=self.kwargs['pk'])
+
+	def retrieve(self, request, *args, **kwargs):
+		product = self.get_object()
+		serializer = DetailProductSerializer(product)
+		if request.user.is_authenticated:
+			response_data = {"cart_count": CartLine.objects.filter(product=product, cart=request.user.cart).count()}
+			response_data.update(serializer.data)
+			return Response(response_data, status=status.HTTP_200_OK)
+		return Response(serializer.data, status=status.HTTP_200_OK)
