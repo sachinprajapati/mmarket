@@ -9,5 +9,6 @@ router.register(r'address', AddressView)
 
 urlpatterns = [
 	path('', include(router.urls)),
+	path('checkout/', CheckOutView.as_view())
     # path('cart/add/', AddTOCart.as_view()),
 ]

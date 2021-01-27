@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, generics
 from rest_framework.response import Response
 
-from .models import Address
-from .serializers import AddressSerializer
+from .models import Address, OrderPayment
+from .serializers import AddressSerializer, OrderPaymentSerializer
 
 class AddressView(viewsets.ModelViewSet):
     model = Address
@@ -28,3 +28,8 @@ class AddressView(viewsets.ModelViewSet):
     # def retrieve(self, request, pk=None):
     #     qt = get_object_or_404(self.queryset, pk=pk, user=request.user)
     #     return Response(AddressSerializer(qt).data, status=status.HTTP_200_OK)
+
+class CheckOutView(generics.CreateAPIView):
+    serializer_class = OrderPaymentSerializer
+    model = OrderPayment
+    queryset = OrderPayment.objects.filter()
