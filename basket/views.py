@@ -16,7 +16,6 @@ class CartViewSet(viewsets.ViewSet):
 
     def create(self, request):
         data = request.data
-        print("data is", data)
         if not data.get('product'):
             return Response({"product": ["This field is required"]}, status=status.HTTP_400_BAD_REQUEST)
         if CartLine.objects.filter(cart=request.user.cart, product__id=data['product']).exists():

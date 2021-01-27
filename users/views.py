@@ -24,13 +24,14 @@ class SendOTP(APIView):
 	permission_classes = [permissions.AllowAny]
 
 	def post(self, request, *args, **kwargs):
-	    data = request.data
-	    if not data.get('phone'):
-	    	return Response({'phone': ["This field is required."]}, status=status.HTTP_404_NOT_FOUND)
-	    user = get_object_or_404(get_user_model(), phone=data['phone'])
-	    user.set_password('123456')
-	    user.save()
-	    return Response({'message': 'otp successfully sent, please enter otp'}, status=status.HTTP_201_CREATED)
+		data = request.data
+		print("data is ", data)
+		if not data.get('phone'):
+			return Response({'phone': ["This field is required."]}, status=status.HTTP_404_NOT_FOUND)
+		user = get_object_or_404(get_user_model(), phone=data['phone'])
+		user.set_password('123456')
+		user.save()
+		return Response({'message': 'otp successfully sent, please enter otp'}, status=status.HTTP_201_CREATED)
 
 
 class CustomAuthToken(ObtainAuthToken):

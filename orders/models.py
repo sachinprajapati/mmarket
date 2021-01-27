@@ -4,6 +4,8 @@ from django.core.validators import RegexValidator
 
 from django.conf import settings
 
+from products.models import Product
+
 class Address(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, verbose_name=_("Full Name"))
@@ -17,3 +19,24 @@ class Address(models.Model):
     city = models.CharField(max_length=55)
     state = models.CharField(max_length=40)
     desc = models.TextField(verbose_name=_("Address Description"), blank=True, null=True)
+
+ORDER_STATUS = [
+    (1, 'Pending'),
+    (2, 'Processing'),
+    (3, 'Rejected'),
+    (4, 'Completed'),
+]
+
+class Orders(models.Model):
+    id = models.UUIDField(primary_key=True)
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    status = models.IntegerField(choices=ORDER_STATUS, default=1, verbose_name=_("Order Status"))
+    address = models.OneToOneField(Address, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class OrderItems(models.Model):
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveSmallIntegerField(default=1)
+    price = models.PositiveSmallIntegerField()
+

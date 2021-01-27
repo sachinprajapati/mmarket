@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions, status
+from rest_framework.response import Response
 
 from .models import Address
 from .serializers import AddressSerializer
@@ -9,14 +10,21 @@ class AddressView(viewsets.ModelViewSet):
     model = Address
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
     def get_queryset(self):
-        if self.kwargs.get('pk'):
-            return Address.objects.filter(user=self.request.user, pk=self.kwargs['pk'])
-        if self.request.method == 'POST':
-            return self
-        if self.request.method == 'GET':
-            return Address.objects.filter(user=self.request.user)
+        return self.model.objects.filter(user=self.request.user)
+
+    # def list(self, request):
+    #     qt = self.model.objects.filter(user=request.user)
+    #     return Response(AddressSerializer(qt, many=True).data, status=status.HTTP_200_OK)
+    #
+    # def retrieve(self, request, pk=None):
+    #     qt = get_object_or_404(self.queryset, pk=pk, user=request.user)
+    #     return Response(AddressSerializer(qt).data, status=status.HTTP_200_OK)

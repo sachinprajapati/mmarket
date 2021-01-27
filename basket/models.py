@@ -18,6 +18,11 @@ class CartLine(models.Model):
     date_created = models.DateTimeField(_("Date Created"), auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(_("Date Updated"), auto_now=True, db_index=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['cart', 'product'], name="_(This proudct already exists in cart)")
+        ]
+
     def save(self, *args, **kwargs):
         self.price = self.product.price*self.quantity
         super(CartLine, self).save(*args, **kwargs)
