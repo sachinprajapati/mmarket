@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Overlay For Sidebars -->
+<div class="overlay"></div>
+
+
+<!-- Right Icon menu Sidebar -->
+{% include 'right-sidebar.html' %}
+
+<!-- Left Sidebar -->
+{% include 'left-sidebar.html' %}
+<section class="content">
+    <div class="body_scroll">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-7 col-md-6 col-sm-12">
+                    <h2>Orders</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}"><i class="zmdi zmdi-home"></i> KGN MALL</a></li>
+                        
+                        <li class="breadcrumb-item active">Confirmed Orders</li>
+                    </ul>
+                    <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
+                </div>
+                <div class="col-lg-5 col-md-6 col-sm-12">                
+                    <button class="btn btn-primary btn-icon float-right right_icon_toggle_btn" type="button"><i class="zmdi zmdi-arrow-right"></i></button>                                
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <!-- Basic Examples -->
+            <div class="row clearfix">
+                <div class="col-lg-12">
+                    <div class="card">
+                        
+                        <div class="body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Invoice No</th>
+                                            <th>Customer Name</th>
+                                            <th>Mobile</th>
+                                            <th>Order Date</th>
+                                            <th>Quantity</th>
+                                            <th>Total Amount</th>
+                                            <th>change Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>KGN001</td>
+                                            <td>Muzammil</td>
+                                            <td>9999999999</td>
+                                            <td>25/01/2019</td>
+                                            <td>5</td>
+                                            <td><i class="fa fa-inr"></i> 3,800</td>
+                                            <td><button class="btn btn-sm btn-primary">Edit</button><button class="btn btn-sm btn-primary">Invoice</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>KGN002</td>
+                                            <td>Muzammil</td>
+                                            <td>9999999999</td>
+                                            <td>25/01/2019</td>
+                                            <td>5</td>
+                                            <td><i class="fa fa-inr"></i> 3,800</td>
+                                            <td><button class="btn btn-sm btn-primary">Edit</button><button class="btn btn-sm btn-primary">Invoice</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>KGN003</td>
+                                            <td>Muzammil</td>
+                                            <td>9999999999</td>
+                                            <td>25/01/2019</td>
+                                            <td>5</td>
+                                            <td><i class="fa fa-inr"></i> 3,800</td>
+                                            <td><button class="btn btn-sm btn-primary">Edit</button><button class="btn btn-sm btn-primary">Invoice</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td>KGN004</td>
+                                            <td>Muzammil</td>
+                                            <td>9999999999</td>
+                                            <td>25/01/2019</td>
+                                            <td>5</td>
+                                            <td><i class="fa fa-inr"></i> 3,800</td>
+                                            <td><button class="btn btn-sm btn-primary">Edit</button><button class="btn btn-sm btn-primary">Invoice</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td>KGN005</td>
+                                            <td>Muzammil</td>
+                                            <td>9999999999</td>
+                                            <td>25/01/2019</td>
+                                            <td>5</td>
+                                            <td><i class="fa fa-inr"></i> 3,800</td>
+                                            <td><button class="btn btn-sm btn-primary">Edit</button><button class="btn btn-sm btn-primary">Invoice</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>6</td>
+                                            <td>KGN006</td>
+                                            <td>Muzammil</td>
+                                            <td>9999999999</td>
+                                            <td>25/01/2019</td>
+                                            <td>5</td>
+                                            <td><i class="fa fa-inr"></i> 3,800</td>
+                                            <td><button class="btn btn-sm btn-primary">Edit</button><button class="btn btn-sm btn-primary">Invoice</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exportable Table -->
+            
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

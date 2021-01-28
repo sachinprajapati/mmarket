@@ -1,6 +1,7 @@
 from django.db import models
 from autoslug import AutoSlugField
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse_lazy
 
 def directory_path(instance, filename):
     print(instance, dir(instance._meta))
@@ -29,6 +30,9 @@ class Category(models.Model):
             full_path.append(k.name)
             k = k.parent
         return ' -> '.join(full_path[::-1])
+
+    def get_update_url(self):
+        return reverse_lazy('update_category', kwargs={'pk': self.pk})
 
 class ProductClass(models.Model):
     name = models.CharField(max_length=255)

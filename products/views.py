@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
 
 from rest_framework import permissions, status, viewsets, generics, filters
 from rest_framework.decorators import action
@@ -59,3 +60,6 @@ class ProductDetailViewSet(generics.RetrieveAPIView):
 		response_data.update(serializer.data)
 		return Response(response_data, status=status.HTTP_200_OK)
 		# return Response(serializer.data, status=status.HTTP_200_OK)
+
+def DCRG(request):
+	return JsonResponse({'status': True})

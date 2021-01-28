@@ -1,0 +1,65 @@
+{% load static %}
+<!doctype html>
+<html class="no-js " lang="en">
+
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<meta name="description" content="">
+<title>KGN Shopping Admin :: Home</title>
+<link rel="icon" href="{% static 'admin-assets/images/favicon.ico' %}" type="image/x-icon"> 
+<!-- Favicon-->
+<link rel="stylesheet" href="{% static 'admin-assets/plugins/bootstrap/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="{% static 'admin-assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.css' %}"/>
+<link rel="stylesheet" href="{% static 'admin-assets/plugins/charts-c3/plugin.css' %}"/>
+
+<link rel="stylesheet" href="{% static 'admin-assets/plugins/morrisjs/morris.min.css' %}" />
+<!-- Custom Css -->
+<link rel="stylesheet" href="{% static 'admin-assets/css/style.min.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="{% static 'admin-assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css' %}">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+<!-- (Optional) Latest compiled and minified JavaScript translation files -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+</head>
+
+<body class="theme-blush">
+            {% block content %}
+            
+            {% endblock %}
+         
+<script src="{% static 'admin-assets/bundles/libscripts.bundle.js' %}"></script>
+<!-- Lib Scripts Plugin Js ( jquery.v3.2.1, Bootstrap4 js) --> 
+<script src="{% static 'admin-assets/bundles/vendorscripts.bundle.js' %}"></script> 
+
+<!-- Jquery DataTable Plugin Js --> 
+<script src="{% static 'admin-assets/bundles/datatablescripts.bundle.js' %}"></script>
+<script src="{% static 'admin-assets/plugins/jquery-datatable/buttons/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'admin-assets/plugins/jquery-datatable/buttons/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'admin-assets/plugins/jquery-datatable/buttons/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'admin-assets/plugins/jquery-datatable/buttons/buttons.flash.min.js' %}"></script>
+<script src="{% static 'admin-assets/plugins/jquery-datatable/buttons/buttons.html5.min.js' %}"></script>
+<script src="{% static 'admin-assets/plugins/jquery-datatable/buttons/buttons.print.min.js' %}"></script>
+<!-- slimscroll, waves Scripts Plugin Js -->
+
+<script src="{% static 'admin-assets/bundles/jvectormap.bundle.js' %}"></script> 
+<!-- JVectorMap Plugin Js -->
+<script src="{% static 'admin-assets/bundles/sparkline.bundle.js' %}"></script> 
+<!-- Sparkline Plugin Js -->
+<script src="{% static 'admin-assets/bundles/c3.bundle.js' %}"></script>
+<script src="{% static 'admin-assets/bundles/footable.bundle.js' %}"></script> <!-- Lib Scripts Plugin Js -->
+<script src="{% static 'admin-assets/bundles/mainscripts.bundle.js' %}"></script>
+<script src="{% static 'admin-assets/js/pages/tables/jquery-datatable.js' %}"></script>
+<script src="{% static 'admin-assets/js/pages/tables/footable.js' %}"></script><!-- Custom Js --> 
+<script src="{% static 'admin-assets/js/pages/index.js' %}"></script>
+</body>
+</html>
+
+
+
