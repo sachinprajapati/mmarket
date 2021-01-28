@@ -10,12 +10,14 @@ class AddressSerializer(serializers.ModelSerializer):
 class OrdersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Orders
-        exlcude = ('dt')
+        exclude = ('dt',)
 
-class OrderPaymentSerializer(serializers.ModelSerializer):
+class GetOrdersSerializer(serializers.ModelSerializer):
     class Meta:
-        model = OrderPayment
-        exclude = ('dt', )
+        model = Orders
+        fields = '__all__'
 
-    def validate_empty_values(self, data):
-        print(self, data)
+class OrderItemsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItems
+        fields = "__all__"

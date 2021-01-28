@@ -4,6 +4,8 @@ from django.core.validators import RegexValidator
 
 from django.conf import settings
 from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from products.models import Product
 
@@ -39,10 +41,11 @@ def Order_ID():
     return now.strftime('%Y%m%d%H%M%S%f')
 
 class Orders(models.Model):
-    order_id = models.UUIDField(primary_key=True, default=Order_ID)
+    order_id = models.CharField(max_length=20, unique=True, default=Order_ID)
+    amount = models.IntegerField()
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.IntegerField(choices=ORDER_STATUS, default=1, verbose_name=_("Order Status"))
-    address = models.OneToOneField(Address, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
     dt = models.DateTimeField(auto_now_add=True)
 
 class OrderItems(models.Model):
@@ -51,6 +54,16 @@ class OrderItems(models.Model):
     quantity = models.PositiveSmallIntegerField(default=1)
     price = models.PositiveSmallIntegerField()
 
+@receiver(post_save, sender=Orders)
+def place_order(sender, instance, created, **kwargs):
+    if created:
+        cart_item = instance.customer.cart.lines.all()
+        l = []
+        for i in cart_item:
+            l.append(OrderItems(order=instance, product=i.product, quantity=i.quantity, price=i.price))
+        OrderItems.objects.bulk_create(l)
+        cart_item.delete()
+
 PAYMENT_TYPE = [
     (1, 'COD'),
     (2, 'Online'),
@@ -58,6 +71,7 @@ PAYMENT_TYPE = [
 
 class OrderPayment(models.Model):
     order = models.OneToOneField(Orders, on_delete=models.CASCADE)
+    amount = models.PositiveIntegerField()
     type = models.PositiveIntegerField(choices=PAYMENT_TYPE)
     tid = models.CharField(max_length=255, null=True)
     dt = models.DateTimeField(auto_now_add=True)
