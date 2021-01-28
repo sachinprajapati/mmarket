@@ -65,7 +65,14 @@ class CheckOutView(APIView):
                 if not order.is_valid():
                     return Response(order.errors, status=status.HTTP_400_BAD_REQUEST)
                 else:
+                    amount = items.aggregate(Sum('price'))['price__sum']
+                    print("amount is", amount)
                     order.save()
+                    try:
+                        op = OrderPayment(order_id=order.data['id'], amount=amount, type=data['type'])
+                        op.save()
+                    except Exception as e:
+                        print(e)
                     return Response(order.data, status=status.HTTP_201_CREATED)
         # if not data.get("amount"):
         #     return Response({"type": ["no paid amount found"]})
@@ -75,12 +82,12 @@ class CheckOutView(APIView):
 
 class OrdersView(viewsets.ModelViewSet):
     model = Orders
-    serializer_class = GetOrdersSerializer
+    serializer_class = OrdersListSerializer
     queryset = Orders.objects.filter()
 
     def list(self, request):
         queryset = Orders.objects.filter(customer=request.user).order_by("-dt")
-        serializer = GetOrdersSerializer(queryset, many=True)
+        serializer = OrdersListSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):

@@ -8,16 +8,21 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         exclude = ('user', )
 
+class OrderPaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderPayment
+        fields = ('amount', 'type', 'tid')
+
 class OrdersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Orders
         exclude = ('dt',)
 
-class GetOrdersSerializer(serializers.ModelSerializer):
+class OrdersListSerializer(serializers.ModelSerializer):
     # status = serializers.SerializerMethodField()
     class Meta:
         model = Orders
-        fields = '__all__'
+        fields = ('id', 'order_id', 'amount', 'status', 'get_payment_type', 'expected_dt', 'dt')
 
     # def get_status(self, obj):
     #     return obj.get_status_display()
@@ -33,4 +38,4 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     orderitems_set = OrderItemsSerializer(read_only=True, many=True)
     class Meta:
         model = Orders
-        fields = ('id', 'order_id', 'amount', 'status', 'dt', 'address', 'orderitems_set')
+        fields = ('id', 'order_id', 'amount', 'status', 'dt', 'address', 'orderitems_set', 'get_payment_type')

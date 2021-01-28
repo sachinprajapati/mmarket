@@ -46,7 +46,12 @@ class Orders(models.Model):
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.IntegerField(choices=ORDER_STATUS, default=1, verbose_name=_("Order Status"))
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    expected_dt = models.DateField(null=True, verbose_name="Expected Delivery Date")
     dt = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def get_payment_type(self):
+        return self.orderpayment.type
 
 class OrderItems(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)
