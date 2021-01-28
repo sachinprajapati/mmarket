@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from .models import Address, OrderPayment, Orders, OrderItems
 from basket.models import CartLine
-from .serializers import AddressSerializer, OrdersSerializer, GetOrdersSerializer
+from .serializers import *
 
 class AddressView(viewsets.ModelViewSet):
     model = Address
@@ -73,9 +73,18 @@ class CheckOutView(APIView):
         #     if items.aggregate(Sum('price')).get('price__sum', 0) != data['amount']:
         #         return Response({'amount': ['wrong amount selected']}, status=status.HTTP_400_BAD_REQUEST)
 
-class OrdersView(generics.ListAPIView):
+class OrdersView(viewsets.ModelViewSet):
     model = Orders
     serializer_class = GetOrdersSerializer
+    queryset = Orders.objects.filter()
 
-    def get_queryset(self):
-        return self.model.objects.filter(customer=self.request.user).order_by("-dt")
+    def list(self, request):
+        queryset = Orders.objects.filter(customer=request.user).order_by("-dt")
+        serializer = GetOrdersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Orders.objects.filter(customer=request.user)
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = OrderDetailSerializer(user)
+        return Response(serializer.data)
