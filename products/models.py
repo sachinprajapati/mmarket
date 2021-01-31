@@ -3,6 +3,8 @@ from autoslug import AutoSlugField
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 
+from djrichtextfield.models import RichTextField
+
 def directory_path(instance, filename):
     print(instance, dir(instance._meta))
     return '{0}/{1}/{2}'.format(instance._meta.db_table.split('_')[1], instance.get_slug(), filename)
@@ -33,6 +35,9 @@ class Category(models.Model):
 
     def get_update_url(self):
         return reverse_lazy('update_category', kwargs={'pk': self.pk})
+
+    def get_delete_url(self):
+        return reverse_lazy('delete_categories"', kwargs={'pk': self.pk})
 
 class ProductClass(models.Model):
     name = models.CharField(max_length=255)
@@ -95,7 +100,7 @@ class Product(models.Model):
     upc = models.CharField(verbose_name=_("UPC"), max_length=64, blank=True, null=True, unique=True, help_text=_("Universal Product Code (UPC) is an identifier for "
                     "a product which is not specific to a particular "
                     " supplier. Eg an ISBN for a book."))
-    description = models.TextField(_('Description'), blank=True)
+    description = RichTextField(_('Description'), blank=True)
     product_class = models.ForeignKey(ProductClass, on_delete=models.SET_NULL, null=True, blank=True)
     attributes = models.ManyToManyField('ProductAttribute', through='ProductAttributeValue',
         verbose_name=_("Attributes"),
@@ -120,13 +125,8 @@ class Product(models.Model):
     def first_image(self):
         return self.images.first().img.url
 
-    # @property
-    # def get_attribute(self):
-    #     print(self.attributes.all().values('name', 'code', 'type'))
-    #     print(self.attribute_values.all().values('attribute'))
-    #     dc = {}
-    #     for i in self.attribute_values.all():
-    #         dc[]
+    def get_update_url(self):
+        return reverse_lazy('update_products', kwargs={'pk': self.pk})
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images', verbose_name=_("Product"))

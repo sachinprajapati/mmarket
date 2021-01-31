@@ -1,92 +1,16 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load render_table from django_tables2 %}
 
 {% block content %}
-
-<!-- Overlay For Sidebars -->
-<div class="overlay"></div>
-
-
-<!-- Right Icon menu Sidebar -->
-{% include 'right-sidebar.html' %}
-
-<!-- Left Sidebar -->
-{% include 'left-sidebar.html' %}
-<section class="content">
-    <div class="body_scroll">
-        <div class="block-header">
-            <div class="row">
-                <div class="col-lg-7 col-md-6 col-sm-12">
-                    <h2>All Categories List</h2>
-                    <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{% url 'index' %}"><i class="zmdi zmdi-home"></i> KGN APP</a></li>
-                        <li class="breadcrumb-item active">Categories List</li>
-                    </ul>
-                    <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
-                </div>
-                
-                <div class="col-lg-5 col-md-6 col-sm-12">                
-                    
-                    <button class="btn btn-primary btn-icon float-right right_icon_toggle_btn" type="button">
-                        <i class="zmdi zmdi-arrow-right"></i>
-                    </button>
-                    <a href="{% url 'add-categories' %}"><button class="btn btn-success btn-icon float-right" type="button">
-                       <i class="zmdi zmdi-plus"></i> 
-                    </button></a>
-                </div>
-            </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Categories List
         </div>
-        <div class="container-fluid">
-            <div class="row clearfix">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="table-responsive">
-                            <table class="table table-hover product_item_list c_table theme-color mb-0">
-                                <thead>
-                                    <tr>
-                                        
-                                        <th>ID</th>
-                                        <th data-breakpoints="xs md">Parent Category</th>
-                                        <th data-breakpoints="sm xs">Category Name</th>
-                                        <th data-breakpoints="xs md">Image</th>
-                                        <th data-breakpoints="sm xs md">Created At</th>
-                                        <th data-breakpoints="sm xs md">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for c in category_list %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td><h5>{{ c }}</h5></td>
-                                        <td><span class="text-muted">{{ c.name }}</span></td>
-                                        <td><span class="text-muted"><img src="{{ c.img.url }}" width="80px;"></span></td>
-                                        <td>{{ c.dt }}</td>
-                                        <td>
-                                            <a href="{{ c.get_update_url }}" class="btn btn-success waves-effect waves-float btn-sm waves-green"><i class="zmdi zmdi-edit"></i></a>
-                                            <a href="javascript:void(0);" class="btn btn-danger waves-effect waves-float btn-sm waves-red"><i class="zmdi zmdi-delete"></i></a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="body">                            
-                            <ul class="pagination pagination-primary m-b-0">
-                                <li class="page-item"><a class="page-link" href="javascript:void(0);"><i class="zmdi zmdi-arrow-left"></i></a></li>
-                                <li class="page-item active"><a class="page-link" href="javascript:void(0);">1</a></li>
-                                <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
-                                <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
-                                <li class="page-item"><a class="page-link" href="javascript:void(0);">4</a></li>
-                                <li class="page-item"><a class="page-link" href="javascript:void(0);"><i class="zmdi zmdi-arrow-right"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                {% render_table table %}
             </div>
         </div>
     </div>
-</section>
 {% endblock %}
-

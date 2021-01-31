@@ -1,16 +1,21 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
+
+from django_tables2 import SingleTableView
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
 from products.models import *
+from .tables import *
 
 # Create your views here.
+@staff_member_required(login_url=reverse_lazy('login'))
 def index(request):
 	if request.user.is_staff:
 		return render(request, 'index.html')
@@ -26,35 +31,92 @@ class Customers(ListView):
 
 def editCustomers(request):
 	return render(request, 'edit-customer.html')
+
 # Products
-def allProducts(request):
-	return render(request, 'products-list.html')
+@method_decorator(staff_member_required, name='dispatch')
+class AllProducts(SingleTableView):
+	queryset = Product.objects.filter()
+	template_name = 'categories-list.html'
+	table_class = ProductTable
 
-def addProducts(request):
-	return render(request, 'add-products.html')
+@method_decorator(staff_member_required, name='dispatch')
+class AddProducts(SuccessMessageMixin, CreateView):
+	model = Product
+	fields = "__all__"
+	template_name = "form_view.html"
+	success_url = reverse_lazy('products_list')
+	success_message = "%(name)s successfully created"
 
-def editProducts(request):
-	return render(request, 'edit-products.html')
+class UpdateProducts(SuccessMessageMixin, UpdateView):
+	model = Product
+	fields = "__all__"
+	template_name = "form_view.html"
+	success_url = reverse_lazy('products_list')
+	success_message = "%(name)s successfully updated"
+
+
+# Products
+@method_decorator(staff_member_required, name='dispatch')
+class AllProductClass(SingleTableView):
+	queryset = ProductClass.objects.filter()
+	template_name = 'categories-list.html'
+	table_class = ProductCLassTable
+
+@method_decorator(staff_member_required, name='dispatch')
+class AddProductClass(SuccessMessageMixin, CreateView):
+	model = ProductClass
+	fields = "__all__"
+	template_name = "form_view.html"
+	success_url = reverse_lazy('product_class_list')
+	success_message = "%(name)s successfully created"
+
+class UpdateProductClass(SuccessMessageMixin, UpdateView):
+	model = ProductClass
+	fields = "__all__"
+	template_name = "form_view.html"
+	success_url = reverse_lazy('product_class_list')
+	success_message = "%(name)s successfully updated"
+
 # Categories
 
 @method_decorator(staff_member_required, name='dispatch')
-class AllCategories(ListView):
+class AllCategories(SingleTableView):
 	queryset = Category.objects.all()
 	template_name = 'categories-list.html'
-	context_object_name = 'category_list'
+	table_class = CategoryTable
+	table_pagination = False
 
 @method_decorator(staff_member_required, name='dispatch')
-class UpdateCategory(UpdateView):
+class UpdateCategory(SuccessMessageMixin, UpdateView):
 	template_name = "form_view.html"
 	model = Category
 	fields = "__all__"
-	success_url = reverse_lazy('update_category')
+	success_message = "%(name)s successfully updated"
+	success_url = reverse_lazy('categories-list')
 
-def addCategories(request):
-	return render(request, 'add-categories.html')
+class AddCategories(SuccessMessageMixin, CreateView):
+	model = Category
+	fields = ("name", "parent", "img")
+	template_name = "form_view.html"
+	success_url = reverse_lazy('categories-list')
+	success_message = "%(name)s successfully created"
 
 def editCategories(request):
 	return render(request, 'edit-categories.html')
+
+@method_decorator(staff_member_required, name='dispatch')
+class DeleteCategory(DeleteView):
+	model = Category
+	success_url = reverse_lazy('categories-list')
+
+@method_decorator(staff_member_required, name='dispatch')
+class AddProductsImages(SuccessMessageMixin, CreateView):
+	model = ProductImage
+	template_name = "form_view.html"
+	fields = "__all__"
+	success_url = reverse_lazy('products_list')
+	success_message = "Product Image Successfully Added"
+
 # Banners
 def allBanner(request):
 	return render(request, 'banners-list.html')

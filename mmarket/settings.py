@@ -37,10 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'products',
+    'basket',
+    'orders',
+    'admins',
+    'crispy_forms',
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
     'django_filters',
+    'django_tables2',
+    'djrichtextfield',
+    'formtools',
 ]
 
 MIDDLEWARE = [
@@ -58,7 +65,7 @@ ROOT_URLCONF = 'mmarket.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -109,7 +116,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
+# TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -123,12 +131,21 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
 AUTH_USER_MODEL = 'users.User'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
 MEDIA_URL = '/mmarket/media/'
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+LOGIN_REDIRECT_URL = '/login/'
+
+LOGOUT_REDIRECT_URL = '/'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -141,6 +158,17 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 20
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    # 'PAGE_SIZE': 20
+}
+
+DJRICHTEXTFIELD_CONFIG = {
+    'js': ['//cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js'],
+    'init_template': 'djrichtextfield/init/tinymce.js',
+    'settings': {
+        'menubar': False,
+        'plugins': 'link image',
+        'toolbar': 'bold italic | link image | removeformat',
+        # 'width': 900
+    }
 }

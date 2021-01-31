@@ -4,6 +4,7 @@ from django.contrib.auth import views as auth_view
 from .views import *
 
 urlpatterns = [
+    path('djrichtextfield/', include('djrichtextfield.urls')),
     path('', index),
     path('index/', index, name="index"),
     # path('about/', About, name="about"),
@@ -23,14 +24,19 @@ urlpatterns = [
     path('customers/', Customers.as_view(), name="customers"),
     path('edit-customer/', editCustomers, name="edit-customer"),
     # Products
-    path('products-list/', allProducts, name="products-list"),
-    path('add-products/', addProducts, name="add-products"),
-    path('edit-products/', editProducts, name="edit-products"),
+    path('products-list/', AllProducts.as_view(), name="products_list"),
+    path('add-products/', AddProducts.as_view(), name="add_products"),
+    path('product-images/', AddProductsImages.as_view(), name="add_product_images"),
+    path('edit-products/<int:pk>/', UpdateProducts.as_view(), name="update_products"),
+    # ProductsClass
+    path('product-class-list/', AllProductClass.as_view(), name="product_class_list"),
+    path('add-product-class/', AddProductClass.as_view(), name="add_product_class"),
+    path('edit-product-class/<int:pk>/', UpdateProductClass.as_view(), name="update_product_class"),
     # Categories
     path('categories-list/', AllCategories.as_view(), name="categories-list"),
     path('category-update/<int:pk>/', UpdateCategory.as_view(), name="update_category"),
-    path('add-categories/', addCategories, name="add-categories"),
-    path('edit-categories/', editCategories, name="edit-categories"),
+    path('add-categories/', AddCategories.as_view(), name="add_categories"),
+    path('delete-categories/<int:pk>/', DeleteCategory.as_view(), name="delete_categories"),
     # Banners
     path('banners-list/', allBanner, name="banners-list"),
     path('add-banner/', addBanner, name="add-banner"),
