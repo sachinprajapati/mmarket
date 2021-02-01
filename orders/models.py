@@ -1,10 +1,12 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
+from django.urls import reverse_lazy
 
 from django.conf import settings
 from django.utils import timezone
 from django.db.models.signals import post_save
+from django.db.models import Avg, Count, Min, Sum
 from django.dispatch import receiver
 
 from products.models import Product
@@ -52,6 +54,17 @@ class Orders(models.Model):
     @property
     def get_payment_type(self):
         return self.orderpayment.type
+
+    def product_count(self):
+        return self.orderitems_set.all().count()
+
+    def quantities(self):
+        quantities = self.orderitems_set.all().values_list('quantity', flat=True)
+        total = sum(quantities)
+        return total
+
+    def get_absolute_url(self):
+        return reverse_lazy('detail_orders', kwargs={'pk': self.pk})
 
 class OrderItems(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)

@@ -5,7 +5,7 @@ from .views import *
 
 urlpatterns = [
     path('djrichtextfield/', include('djrichtextfield.urls')),
-    path('', index),
+    path('', index, name="dashboard"),
     path('index/', index, name="index"),
     # path('about/', About, name="about"),
     # path('contact/', Contact, name="contact"),
@@ -37,6 +37,10 @@ urlpatterns = [
     path('category-update/<int:pk>/', UpdateCategory.as_view(), name="update_category"),
     path('add-categories/', AddCategories.as_view(), name="add_categories"),
     path('delete-categories/<int:pk>/', DeleteCategory.as_view(), name="delete_categories"),
+    # Orders
+    path('orders-list/', AllOrders.as_view(), name="orders_list"),
+    path('orders-update/<int:pk>/', UpdateOrders.as_view(), name="update_orders"),
+    path('order-detail/<int:pk>/', DetailOrders.as_view(), name="detail_orders"),
     # Banners
     path('banners-list/', allBanner, name="banners-list"),
     path('add-banner/', addBanner, name="add-banner"),

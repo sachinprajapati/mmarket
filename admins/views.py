@@ -1,17 +1,20 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
+from django.views.generic.detail import DetailView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
 
-from django_tables2 import SingleTableView
+from django_tables2 import SingleTableView, SingleTableMixin
+from django_filters.views import FilterView
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
 from products.models import *
+from orders.models import *
 from .tables import *
 
 # Create your views here.
@@ -36,7 +39,7 @@ def editCustomers(request):
 @method_decorator(staff_member_required, name='dispatch')
 class AllProducts(SingleTableView):
 	queryset = Product.objects.filter()
-	template_name = 'categories-list.html'
+	template_name = 'list_view.html'
 	table_class = ProductTable
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -59,7 +62,7 @@ class UpdateProducts(SuccessMessageMixin, UpdateView):
 @method_decorator(staff_member_required, name='dispatch')
 class AllProductClass(SingleTableView):
 	queryset = ProductClass.objects.filter()
-	template_name = 'categories-list.html'
+	template_name = 'list_view.html'
 	table_class = ProductCLassTable
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -82,7 +85,7 @@ class UpdateProductClass(SuccessMessageMixin, UpdateView):
 @method_decorator(staff_member_required, name='dispatch')
 class AllCategories(SingleTableView):
 	queryset = Category.objects.all()
-	template_name = 'categories-list.html'
+	template_name = 'list_view.html'
 	table_class = CategoryTable
 	table_pagination = False
 
@@ -116,6 +119,30 @@ class AddProductsImages(SuccessMessageMixin, CreateView):
 	fields = "__all__"
 	success_url = reverse_lazy('products_list')
 	success_message = "Product Image Successfully Added"
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class UpdateOrders(SuccessMessageMixin, UpdateView):
+	template_name = "form_view.html"
+	model = Orders
+	fields = "__all__"
+	success_message = "%(name)s successfully updated"
+	success_url = reverse_lazy('categories-list')
+
+@method_decorator(staff_member_required, name='dispatch')
+class AllOrders(SingleTableMixin, FilterView):
+	table_class = OrdersTable
+	model = Orders
+	template_name = "list_view.html"
+	filterset_class = OrdersFilter
+	queryset = model.objects.filter()
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class DetailOrders(DetailView):
+	model = Orders
+	context_object_name = 'order'
+	template_name = "orders_detail.html"
 
 # Banners
 def allBanner(request):
