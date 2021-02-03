@@ -4,7 +4,9 @@ from products.models import Category, Product, ProductClass
 from orders.models import Orders
 
 import django_tables2 as tables
-from django_filters import rest_framework as filters, NumberFilter
+from django_filters import rest_framework as filters, NumberFilter, ChoiceFilter
+from django.contrib.auth import get_user_model
+User = get_user_model()
 import itertools
 
 class ImageColumn(tables.Column):
@@ -50,7 +52,6 @@ class OrdersFilter(filters.FilterSet):
         fields = ("order_id", "status")
 
 class OrdersTable(tables.Table):
-    expected_dt = tables.Column(verbose_name="Expected Delivery")
     customer = tables.Column(orderable=False)
     product_count = tables.Column(verbose_name="No. Products", orderable=False)
     quantities = tables.Column(verbose_name="Total units", orderable=False)
@@ -58,7 +59,35 @@ class OrdersTable(tables.Table):
     class Meta:
         model = Orders
         template_name = "django_table2/bootstrap.html"
-        fields = ("order_id", "amount", "status", "expected_dt", "product_count", "quantities", "get_absolute_url")
+        fields = ("order_id", "amount", "status", "product_count", "quantities", "get_absolute_url")
+
+    def render_get_absolute_url(self, value):
+        return mark_safe('<a href="%s"><span class="fa fa-info-circle"></span></a>' % escape(value))
+
+    def render_customer(self, value):
+        return mark_safe('<a href="%s"><span>%s</span></a>' % (escape(value.get_absolute_url()), escape(value.name)))
+
+USER_STATUS = [
+    ('', "All"),
+    (True, "Active"),
+    (False, "Inactive")
+]
+
+class UsersFilter(filters.FilterSet):
+    is_active = ChoiceFilter(choices=USER_STATUS)
+    class Meta:
+        model = User
+        fields = ("phone", "email", "is_active")
+
+class UserList(tables.Table):
+    get_absolute_url = tables.Column(orderable=False, verbose_name="Detail")
+    email = tables.Column(orderable=False)
+    phone = tables.Column(orderable=False)
+    name = tables.Column(orderable=False)
+    class Meta:
+        model = User
+        template_name = "django_table2/bootstrap.html"
+        fields = ("name", "phone", "email", "is_active", "date_joined", "get_absolute_url")
 
     def render_get_absolute_url(self, value):
         return mark_safe('<a href="%s"><span class="fa fa-info-circle"></span></a>' % escape(value))

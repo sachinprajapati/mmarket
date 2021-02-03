@@ -4,6 +4,7 @@ from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser, Permi
 from django.core.validators import RegexValidator
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
+from django.urls import reverse_lazy
 
 from basket.models import Cart
 
@@ -35,31 +36,34 @@ class MyUserManager(BaseUserManager):
         return user
 
 class User(AbstractBaseUser, PermissionsMixin):
-	name = models.CharField(max_length=255)
-	email = models.EmailField(_('email address'), unique=True)
-	phone_regex = RegexValidator(regex=r'^(\+\d{1,3})?,?\s?\d{10}', message="Phone number must be entered in the format: '+999999999'. Up to 10 digits allowed.")
-	phone = models.DecimalField(validators=[phone_regex], max_digits=10, decimal_places=0, unique=True)
-	is_active = models.BooleanField(default=True)
-	is_staff = models.BooleanField(default=False)
-	date_joined = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=255)
+    email = models.EmailField(_('email address'), unique=True)
+    phone_regex = RegexValidator(regex=r'^(\+\d{1,3})?,?\s?\d{10}', message="Phone number must be entered in the format: '+999999999'. Up to 10 digits allowed.")
+    phone = models.DecimalField(validators=[phone_regex], max_digits=10, decimal_places=0, unique=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(auto_now_add=True)
 
-	objects = MyUserManager()
+    objects = MyUserManager()
 
-	USERNAME_FIELD = 'phone'
-	REQUIRED_FIELDS = ['name']
+    USERNAME_FIELD = 'phone'
+    REQUIRED_FIELDS = ['name']
 
-	def __str__(self):
-	    return '%s' % self.phone
+    def __str__(self):
+        return '%s' % self.phone
 
-	def has_perm(self, perm, obj=None):
-	    "Does the user have a specific permission?"
-	    # Simplest possible answer: Yes, always
-	    return True
+    def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return True
 
-	def has_module_perms(self, app_label):
-	    "Does the user have permissions to view the app `app_label`?"
-	    # Simplest possible answer: Yes, always
-	    return True
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    def get_absolute_url(self):
+        return reverse_lazy('detail_customer', kwargs={'pk': self.pk})
 
 def create_cart(sender, instance, created, **kwargs):
     if created:

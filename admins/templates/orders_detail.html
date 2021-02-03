@@ -60,9 +60,8 @@
                             <div>
                                 <strong>{{ order.customer.name }}</strong>
                             </div>
-                            <div>{{ order.address }}</div>
                             <div>Email: {{ order.customer.email }}</div>
-                            <div>Phone: {{ order.customer }}</div>
+                            <div>{{ order.address.get_address|safe }}</div>
                         </div>
                         <div class="col-sm-4">
                             <h6 class="mb-3">Details:</h6>

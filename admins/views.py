@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.views.generic.detail import DetailView
@@ -115,10 +115,15 @@ class DeleteCategory(DeleteView):
 @method_decorator(staff_member_required, name='dispatch')
 class AddProductsImages(SuccessMessageMixin, CreateView):
 	model = ProductImage
-	template_name = "form_view.html"
+	template_name = "product_images.html"
 	fields = "__all__"
 	success_url = reverse_lazy('products_list')
 	success_message = "Product Image Successfully Added"
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['product'] = get_object_or_404(Product, pk=self.kwargs['pk'])
+		return context
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -143,6 +148,20 @@ class DetailOrders(DetailView):
 	model = Orders
 	context_object_name = 'order'
 	template_name = "orders_detail.html"
+
+@method_decorator(staff_member_required, name='dispatch')
+class DetailCustomer(DetailView):
+	model = User
+	context_object_name = 'customer'
+	template_name = "customer_detail.html"
+
+@method_decorator(staff_member_required, name='dispatch')
+class ListCustomer(SingleTableMixin, FilterView):
+	table_class = UserList
+	model = User
+	template_name = "list_view.html"
+	filterset_class = UsersFilter
+	queryset = model.objects.filter(is_staff=False, is_superuser=False)
 
 # Banners
 def allBanner(request):

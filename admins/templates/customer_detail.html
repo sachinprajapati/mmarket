@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div id="user" class="container profile" style="">
+  <div class="row">
+    <div class="col text-center mt-3">
+      <img alt="picture" src="user.picture" class="img-lg rounded-circle border shadow" />
+      <h2 class="mt-3">{{ customer.name }}</h2>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="address-tab" data-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="false">Address</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+          <table class="table table-hover table-sm table-properties">
+            <tr v-show="user.sub">
+              <th>Name</th>
+              <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 20rem;">{{customer.name}}</td>
+            </tr>
+            <tr>
+              <th>uid</th>
+              <td>{{customer.id}}</td>
+            </tr>
+            <tr>
+              <th>Join</th>
+              <td>{{customer.date_joined}}</td>
+            </tr>
+            <tr>
+              <th>is_active</th>
+              <td>{{customer.is_active}}</td>
+            </tr>
+              <tr v-show="user.email">
+              <th>email</th>
+              <td>{{customer.email}}</td>
+            </tr>
+            <tr v-show="user.phone_number">
+              <th>phone number</th>
+              <td>{{customer}}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+            <div class="row">
+              {% for a in customer.address_set.all %}
+                  <div class="card">
+                  <div class="card-body">
+                      {{ a.get_address|safe }}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

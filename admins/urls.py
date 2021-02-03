@@ -26,7 +26,7 @@ urlpatterns = [
     # Products
     path('products-list/', AllProducts.as_view(), name="products_list"),
     path('add-products/', AddProducts.as_view(), name="add_products"),
-    path('product-images/', AddProductsImages.as_view(), name="add_product_images"),
+    path('product-images/<int:pk>/', AddProductsImages.as_view(), name="add_product_images"),
     path('edit-products/<int:pk>/', UpdateProducts.as_view(), name="update_products"),
     # ProductsClass
     path('product-class-list/', AllProductClass.as_view(), name="product_class_list"),
@@ -41,6 +41,9 @@ urlpatterns = [
     path('orders-list/', AllOrders.as_view(), name="orders_list"),
     path('orders-update/<int:pk>/', UpdateOrders.as_view(), name="update_orders"),
     path('order-detail/<int:pk>/', DetailOrders.as_view(), name="detail_orders"),
+    #customer
+    path('customer-detail/<int:pk>/', DetailCustomer.as_view(), name="detail_customer"),
+    path('customer-list/', ListCustomer.as_view(), name="list_customer"),
     # Banners
     path('banners-list/', allBanner, name="banners-list"),
     path('add-banner/', addBanner, name="add-banner"),

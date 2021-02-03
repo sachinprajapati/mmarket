@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 
 from django.conf import settings
 from django.utils import timezone
+from django.utils.html import strip_tags
 from django.db.models.signals import post_save
 from django.db.models import Avg, Count, Min, Sum
 from django.dispatch import receiver
@@ -31,9 +32,14 @@ class Address(models.Model):
     type = models.PositiveSmallIntegerField(choices=ADDRESS_TYE)
     desc = models.TextField(verbose_name=_("Address Description"), blank=True, null=True)
 
+    def get_address(self):
+        return "<p>phone\t:-\t%s<br/>%s, %s, %s, %s, %s<br/>Type\t:-\t%s<br/></p>" \
+               % (self.phone, self.house, self.area, self.city, self.state, self.pincode, self.get_type_display())
+
 ORDER_STATUS = [
+    (0, 'Cancelled'),
     (1, 'Pending'),
-    (2, 'Processing'),
+    (2, 'Confirm'),
     (3, 'Rejected'),
     (4, 'Completed'),
 ]
