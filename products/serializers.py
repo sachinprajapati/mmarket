@@ -3,6 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
 from .models import *
+from admins.models import Banner
 
 class CategorySerializer(serializers.ModelSerializer):
 	class Meta:
@@ -38,3 +39,8 @@ class DetailProductSerializer(serializers.ModelSerializer):
 	class Meta:
 	    model = Product
 	    fields = ('id', 'name', 'images', 'mrp', 'price', 'description', 'categories', 'rating', 'date_created', 'attributes')
+
+class ListBannerSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Banner
+		fields = "__all__"

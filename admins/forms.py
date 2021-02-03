@@ -1,5 +1,6 @@
 from django import forms
 from products.models import Product, Category, ProductImage
+from orders.models import Orders
 
 class AddProduct(forms.ModelForm):
     categories = forms.ModelMultipleChoiceField(queryset=Category.objects.filter(parent__isnull=False))
@@ -13,4 +14,8 @@ class AddProductImage(forms.ModelForm):
         model = ProductImage
         fields = ("img", "caption", "display_order", "product")
 
-ProductImageFormset = forms.modelformset_factory(ProductImage, exclude=("product", ), max_num=6, min_num=1, form=AddProductImage,can_delete=True)
+class OrderStatusForm(forms.ModelForm):
+    order_id = forms.CharField(disabled=True)
+    class Meta:
+        model = Orders
+        fields = ("order_id", "status")

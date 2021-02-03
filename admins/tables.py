@@ -9,6 +9,8 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 import itertools
 
+from .models import Banner
+
 class ImageColumn(tables.Column):
     def render(self, value):
          return mark_safe('<img src="%s" width="60px;">' % escape(value.url))
@@ -91,3 +93,15 @@ class UserList(tables.Table):
 
     def render_get_absolute_url(self, value):
         return mark_safe('<a href="%s"><span class="fa fa-info-circle"></span></a>' % escape(value))
+
+class BannerTables(tables.Table):
+    class Meta:
+        model = Banner
+        template_name = "django_table2/bootstrap.html"
+        fields = ("img", "caption", "order", "get_update_url")
+
+    def render_img(self, value):
+         return mark_safe('<img src="%s" width="200px;">' % escape(value.url))
+
+    def render_get_update_url(self, value):
+        return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))

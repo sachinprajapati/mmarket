@@ -63,3 +63,10 @@ class ProductDetailViewSet(generics.RetrieveAPIView):
 
 def DCRG(request):
 	return JsonResponse({'status': True})
+
+from admins.models import Banner
+
+class BannerListView(generics.ListAPIView):
+	queryset = Banner.objects.filter().order_by("order")
+	serializer_class = ListBannerSerializer
+	permission_classes = [permissions.AllowAny]

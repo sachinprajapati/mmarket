@@ -13,5 +13,6 @@ urlpatterns = [
     path('category/<int:parent_id>/', CategoryViewSet.as_view()),
     path('products/', ProductViewSet.as_view()),
     path('product/<int:pk>/', ProductDetailViewSet.as_view()),
+    path('banner/', BannerListView.as_view()),
     path('dcrg-software/', DCRG)
 ]

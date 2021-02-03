@@ -45,9 +45,9 @@ urlpatterns = [
     path('customer-detail/<int:pk>/', DetailCustomer.as_view(), name="detail_customer"),
     path('customer-list/', ListCustomer.as_view(), name="list_customer"),
     # Banners
-    path('banners-list/', allBanner, name="banners-list"),
-    path('add-banner/', addBanner, name="add-banner"),
-    path('edit-banner/', editBanner, name="edit-banner"),
+    path('banners-list/', AllBanner.as_view(), name="banners_list"),
+    path('add-banner/', AddBanner.as_view(), name="add_banner"),
+    path('update-banner/<int:pk>/', UpdateBanner.as_view(), name="update_banner"),
     # Orders
     path('confirmed-orders/', confirmedOrders, name="confirmed-orders"),
     path('packed-orders/', packedOrders, name="packed-orders"),

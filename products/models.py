@@ -2,6 +2,7 @@ from django.db import models
 from autoslug import AutoSlugField
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
+from PIL import Image
 
 from djrichtextfield.models import RichTextField
 
@@ -142,3 +143,9 @@ class ProductImage(models.Model):
 
     def get_slug(self):
         return self.product.title
+
+    # def save(self, *args, **kwargs):
+    #     instance = super(ProductImage, self).save(*args, **kwargs)
+    #     image = Image.open(instance.img.path)
+    #     image.save(instance.img.path, quality=20, optimize=True)
+    #     return instance

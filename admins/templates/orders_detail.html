@@ -42,8 +42,8 @@
                     <strong>#BBB-10010110101938</strong>
                     <a class="btn btn-sm btn-secondary float-right mr-1 d-print-none" href="#" onclick="javascript:window.print();" data-abc="true">
                         <i class="fa fa-print"></i> Print</a>
-                    <a class="btn btn-sm btn-info float-right mr-1 d-print-none" href="#" data-abc="true">
-                        <i class="fa fa-save"></i> Save</a>
+                    <a class="btn btn-sm btn-info float-right mr-1 d-print-none" href="{% url 'update_orders' order.id %}" data-abc="true">
+                        <i class="fa fa-save"></i> Update Status</a>
                 </div>
                 <div class="card-body">
                     <div class="row mb-4">

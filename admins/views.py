@@ -4,8 +4,10 @@ from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.views.generic.detail import DetailView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
+from django.forms import modelformset_factory
 
 from django_tables2 import SingleTableView, SingleTableMixin
 from django_filters.views import FilterView
@@ -17,6 +19,7 @@ from products.models import *
 from orders.models import *
 from .tables import *
 from .forms import *
+from .models import *
 
 # Create your views here.
 @staff_member_required(login_url=reverse_lazy('login'))
@@ -138,6 +141,8 @@ class DeleteCategory(DeleteView):
 def AddProductsImages(request, pk):
 	template_name = 'product_images.html'
 	product = get_object_or_404(Product, pk=pk)
+	ProductImageFormset = modelformset_factory(ProductImage, exclude=("product",), extra=6-product.images.all().count(), min_num=1,
+													 form=AddProductImage, can_delete=True)
 	formset = ProductImageFormset(request.POST or None, request.FILES or None, queryset=ProductImage.objects.filter(product=product))
 	if request.method == "POST":
 		if formset.is_valid():
@@ -145,6 +150,7 @@ def AddProductsImages(request, pk):
 				instance = form.save(commit=False)
 				instance.product = product
 			formset.save()
+			messages.success(request, 'product images successfully updated')
 			return redirect(reverse_lazy('products_list'))
 	return render(request, template_name, {
 		'formset': formset,
@@ -155,10 +161,12 @@ def AddProductsImages(request, pk):
 @method_decorator(staff_member_required, name='dispatch')
 class UpdateOrders(SuccessMessageMixin, UpdateView):
 	template_name = "form_view.html"
-	model = Orders
-	fields = "__all__"
+	form_class = OrderStatusForm
 	success_message = "%(name)s successfully updated"
 	success_url = reverse_lazy('categories-list')
+
+	def get_object(self):
+		return Orders.objects.get(pk=self.kwargs.get('pk'))
 
 @method_decorator(staff_member_required, name='dispatch')
 class AllOrders(SingleTableMixin, FilterView):
@@ -190,8 +198,24 @@ class ListCustomer(SingleTableMixin, FilterView):
 	queryset = model.objects.filter(is_staff=False, is_superuser=False)
 
 # Banners
-def allBanner(request):
-	return render(request, 'banners-list.html')
+class AllBanner(SingleTableView):
+	table_class = BannerTables
+	model = Banner
+	template_name = "list_view.html"
+
+class AddBanner(SuccessMessageMixin, CreateView):
+	model = Banner
+	fields = "__all__"
+	template_name = "form_view.html"
+	success_message = "Banner Successfully Added"
+	success_url = reverse_lazy("banners_list")
+
+class UpdateBanner(SuccessMessageMixin, UpdateView):
+	model = Banner
+	fields = "__all__"
+	template_name = "form_view.html"
+	success_message = "Banner Successfully Updated"
+	success_url = reverse_lazy("banners_list")
 
 def addBanner(request):
 	return render(request, 'add-banner.html')

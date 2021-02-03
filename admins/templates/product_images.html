@@ -6,7 +6,7 @@
 <form method="POST" action="" enctype="multipart/form-data">
 	{% csrf_token %}
     {{ formset|crispy }}
-	<input type="submit" value="Submit">
+	<input type="submit" value="Submit" class="btn btn-primary">
 </form>
 
 {% endblock %}
