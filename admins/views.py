@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.views.generic.detail import DetailView
@@ -16,6 +16,7 @@ User = get_user_model()
 from products.models import *
 from orders.models import *
 from .tables import *
+from .forms import *
 
 # Create your views here.
 @staff_member_required(login_url=reverse_lazy('login'))
@@ -44,18 +45,25 @@ class AllProducts(SingleTableView):
 
 @method_decorator(staff_member_required, name='dispatch')
 class AddProducts(SuccessMessageMixin, CreateView):
-	model = Product
-	fields = "__all__"
+	form_class = AddProduct
 	template_name = "form_view.html"
 	success_url = reverse_lazy('products_list')
 	success_message = "%(name)s successfully created"
 
+	def get_success_url(self):
+		return reverse_lazy('add_product_images', args=(self.object.id,))
+
 class UpdateProducts(SuccessMessageMixin, UpdateView):
-	model = Product
-	fields = "__all__"
+	form_class = AddProduct
 	template_name = "form_view.html"
 	success_url = reverse_lazy('products_list')
 	success_message = "%(name)s successfully updated"
+
+	def get_object(self):
+		return Product.objects.get(pk=self.kwargs.get('pk'))
+
+	def get_success_url(self):
+		return reverse_lazy('add_product_images', args=(self.object.id,))
 
 
 # Products
@@ -112,18 +120,36 @@ class DeleteCategory(DeleteView):
 	model = Category
 	success_url = reverse_lazy('categories-list')
 
-@method_decorator(staff_member_required, name='dispatch')
-class AddProductsImages(SuccessMessageMixin, CreateView):
-	model = ProductImage
-	template_name = "product_images.html"
-	fields = "__all__"
-	success_url = reverse_lazy('products_list')
-	success_message = "Product Image Successfully Added"
+# @method_decorator(staff_member_required, name='dispatch')
+# class AddProductsImages(SuccessMessageMixin, CreateView):
+# 	model = ProductImage
+# 	template_name = "product_images.html"
+# 	fields = "__all__"
+# 	success_url = reverse_lazy('products_list')
+# 	success_message = "Product Image Successfully Added"
+#
+# 	def get_context_data(self, **kwargs):
+# 		context = super().get_context_data(**kwargs)
+# 		context['product'] = get_object_or_404(Product, pk=self.kwargs['pk'])
+# 		return context
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['product'] = get_object_or_404(Product, pk=self.kwargs['pk'])
-		return context
+
+@staff_member_required
+def AddProductsImages(request, pk):
+	template_name = 'product_images.html'
+	product = get_object_or_404(Product, pk=pk)
+	formset = ProductImageFormset(request.POST or None, request.FILES or None, queryset=ProductImage.objects.filter(product=product))
+	if request.method == "POST":
+		if formset.is_valid():
+			for form in formset:
+				instance = form.save(commit=False)
+				instance.product = product
+			formset.save()
+			return redirect(reverse_lazy('products_list'))
+	return render(request, template_name, {
+		'formset': formset,
+		'product': product,
+	})
 
 
 @method_decorator(staff_member_required, name='dispatch')

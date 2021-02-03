@@ -26,7 +26,7 @@ urlpatterns = [
     # Products
     path('products-list/', AllProducts.as_view(), name="products_list"),
     path('add-products/', AddProducts.as_view(), name="add_products"),
-    path('product-images/<int:pk>/', AddProductsImages.as_view(), name="add_product_images"),
+    path('product-images/<int:pk>/', AddProductsImages, name="add_product_images"),
     path('edit-products/<int:pk>/', UpdateProducts.as_view(), name="update_products"),
     # ProductsClass
     path('product-class-list/', AllProductClass.as_view(), name="product_class_list"),

@@ -83,7 +83,7 @@ class ProductAttribute(models.Model):
         return getattr(self.productattributevalue, 'value_'+self.type)
 
 class ProductAttributeValue(models.Model):
-    attribute = models.OneToOneField(ProductAttribute, on_delete=models.CASCADE,verbose_name=_("Attribute"))
+    attribute = models.ForeignKey(ProductAttribute, on_delete=models.CASCADE,verbose_name=_("Attribute"))
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='attribute_values', verbose_name=_("Product"))
     value_text = models.TextField(_('Text'), blank=True, null=True)
     value_integer = models.IntegerField(_('Integer'), blank=True, null=True, db_index=True)
@@ -95,7 +95,7 @@ class ProductAttributeValue(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=255)
     title = AutoSlugField(populate_from='name')
-    price = models.PositiveIntegerField()
+    price = models.PositiveIntegerField(verbose_name=_("Selling Price"))
     is_public = models.BooleanField(_('Is public'), default=True, db_index=True, help_text=_("Show this product in search results and catalogue listings."))
     upc = models.CharField(verbose_name=_("UPC"), max_length=64, blank=True, null=True, unique=True, help_text=_("Universal Product Code (UPC) is an identifier for "
                     "a product which is not specific to a particular "
@@ -107,7 +107,7 @@ class Product(models.Model):
         help_text=_("A product attribute is something that this product may "
                     "have, such as a size, as specified by its class"))
     categories = models.ManyToManyField('Category', verbose_name=_("Categories"))
-    mrp = models.FloatField()
+    mrp = models.FloatField(verbose_name=_("Product MRP"))
     rating = models.FloatField(_('Rating'), null=True, editable=False)
     date_created = models.DateTimeField(
         _("Date created"), auto_now_add=True, db_index=True)
