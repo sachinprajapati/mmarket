@@ -13,14 +13,14 @@ User = get_user_model()
 from .serializers import *
 
 class UserViewSet(generics.CreateAPIView):
-	model = get_user_model()
+	model = User
 	queryset = model.objects.all()
 	permission_classes = [permissions.AllowAny]
-	serializer_class = UserSerializer
+	serializer_class = UserCreateSerializer
 
 
 class SendOTP(APIView):
-	model = get_user_model()
+	model = User
 	queryset = model.objects.all()
 	permission_classes = [permissions.AllowAny]
 

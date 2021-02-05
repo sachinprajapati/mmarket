@@ -42,6 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone = models.DecimalField(validators=[phone_regex], max_digits=10, decimal_places=0, unique=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
 
     objects = MyUserManager()
