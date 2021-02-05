@@ -35,6 +35,11 @@ class DetailProductSerializer(serializers.ModelSerializer):
 	images = ProductImageSerializer(read_only=True, many=True)
 	categories = CategorySerializer(read_only=True, many=True)
 	attributes = ProductAttributeSerializer(read_only=True, many=True)
+	description = serializers.SerializerMethodField()
+
+	def get_description(self, instance):
+		from django.utils.html import strip_tags
+		return strip_tags(instance.description)
 
 	class Meta:
 	    model = Product
