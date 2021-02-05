@@ -124,7 +124,8 @@ class Product(models.Model):
 
     @property
     def first_image(self):
-        return self.images.first().img.url
+        if self.images.all():
+            return self.images.first().img.url
 
     def get_update_url(self):
         return reverse_lazy('update_products', kwargs={'pk': self.pk})

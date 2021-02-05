@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 
 from django.contrib.auth import get_user_model
+User = get_user_model()
 
 from .serializers import *
 
@@ -49,3 +50,11 @@ class CustomAuthToken(ObtainAuthToken):
 	        'token': token.key,
 	        'user_id': user.pk,
 	    })
+
+class ProfileView(generics.RetrieveUpdateAPIView):
+	model = User
+	serializer_class = UserSerializer
+	queryset = model.objects.all()
+
+	def get_object(self):
+		return self.request.user
