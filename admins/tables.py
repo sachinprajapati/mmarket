@@ -95,6 +95,8 @@ class UserList(tables.Table):
         return mark_safe('<a href="%s"><span class="fa fa-info-circle"></span></a>' % escape(value))
 
 class BannerTables(tables.Table):
+    get_update_url = tables.Column(verbose_name="Edit", orderable=False)
+    img = tables.Column(orderable=False)
     class Meta:
         model = Banner
         template_name = "django_table2/bootstrap.html"

@@ -58,3 +58,13 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
 	def get_object(self):
 		return self.request.user
+
+class Downlines(generics.ListAPIView):
+	model = User
+	serializer_class = UserDownlineSerializer
+
+	def get_object(self):
+		return self.request.user
+
+	def get_queryset(self):
+		return User.objects.filter(parent=self.request.user).select_related()

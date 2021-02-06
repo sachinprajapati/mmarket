@@ -40,13 +40,13 @@ def editCustomers(request):
 	return render(request, 'edit-customer.html')
 
 # Products
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AllProducts(SingleTableView):
 	queryset = Product.objects.filter()
 	template_name = 'list_view.html'
 	table_class = ProductTable
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AddProducts(SuccessMessageMixin, CreateView):
 	form_class = AddProduct
 	template_name = "form_view.html"
@@ -56,6 +56,7 @@ class AddProducts(SuccessMessageMixin, CreateView):
 	def get_success_url(self):
 		return reverse_lazy('add_product_images', args=(self.object.id,))
 
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class UpdateProducts(SuccessMessageMixin, UpdateView):
 	form_class = AddProduct
 	template_name = "form_view.html"
@@ -70,13 +71,13 @@ class UpdateProducts(SuccessMessageMixin, UpdateView):
 
 
 # Products
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AllProductClass(SingleTableView):
 	queryset = ProductClass.objects.filter()
 	template_name = 'list_view.html'
 	table_class = ProductCLassTable
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AddProductClass(SuccessMessageMixin, CreateView):
 	model = ProductClass
 	fields = "__all__"
@@ -84,6 +85,7 @@ class AddProductClass(SuccessMessageMixin, CreateView):
 	success_url = reverse_lazy('product_class_list')
 	success_message = "%(name)s successfully created"
 
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class UpdateProductClass(SuccessMessageMixin, UpdateView):
 	model = ProductClass
 	fields = "__all__"
@@ -93,14 +95,14 @@ class UpdateProductClass(SuccessMessageMixin, UpdateView):
 
 # Categories
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AllCategories(SingleTableView):
 	queryset = Category.objects.all()
 	template_name = 'list_view.html'
 	table_class = CategoryTable
 	table_pagination = False
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class UpdateCategory(SuccessMessageMixin, UpdateView):
 	template_name = "form_view.html"
 	model = Category
@@ -108,6 +110,7 @@ class UpdateCategory(SuccessMessageMixin, UpdateView):
 	success_message = "%(name)s successfully updated"
 	success_url = reverse_lazy('categories-list')
 
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AddCategories(SuccessMessageMixin, CreateView):
 	model = Category
 	fields = ("name", "parent", "img")
@@ -118,12 +121,12 @@ class AddCategories(SuccessMessageMixin, CreateView):
 def editCategories(request):
 	return render(request, 'edit-categories.html')
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class DeleteCategory(DeleteView):
 	model = Category
 	success_url = reverse_lazy('categories-list')
 
-# @method_decorator(staff_member_required, name='dispatch')
+# @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 # class AddProductsImages(SuccessMessageMixin, CreateView):
 # 	model = ProductImage
 # 	template_name = "product_images.html"
@@ -137,7 +140,7 @@ class DeleteCategory(DeleteView):
 # 		return context
 
 
-@staff_member_required
+@staff_member_required(login_url=reverse_lazy('login'))
 def AddProductsImages(request, pk):
 	template_name = 'product_images.html'
 	product = get_object_or_404(Product, pk=pk)
@@ -158,7 +161,7 @@ def AddProductsImages(request, pk):
 	})
 
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class UpdateOrders(SuccessMessageMixin, UpdateView):
 	template_name = "form_view.html"
 	form_class = OrderStatusForm
@@ -168,7 +171,7 @@ class UpdateOrders(SuccessMessageMixin, UpdateView):
 	def get_object(self):
 		return Orders.objects.get(pk=self.kwargs.get('pk'))
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AllOrders(SingleTableMixin, FilterView):
 	table_class = OrdersTable
 	model = Orders
@@ -177,19 +180,19 @@ class AllOrders(SingleTableMixin, FilterView):
 	queryset = model.objects.filter()
 
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class DetailOrders(DetailView):
 	model = Orders
 	context_object_name = 'order'
 	template_name = "orders_detail.html"
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class DetailCustomer(DetailView):
 	model = User
 	context_object_name = 'customer'
 	template_name = "customer_detail.html"
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class ListCustomer(SingleTableMixin, FilterView):
 	table_class = UserList
 	model = User
@@ -198,11 +201,13 @@ class ListCustomer(SingleTableMixin, FilterView):
 	queryset = model.objects.filter(is_staff=False, is_superuser=False)
 
 # Banners
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AllBanner(SingleTableView):
 	table_class = BannerTables
 	model = Banner
 	template_name = "list_view.html"
 
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AddBanner(SuccessMessageMixin, CreateView):
 	model = Banner
 	fields = "__all__"
@@ -210,6 +215,7 @@ class AddBanner(SuccessMessageMixin, CreateView):
 	success_message = "Banner Successfully Added"
 	success_url = reverse_lazy("banners_list")
 
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class UpdateBanner(SuccessMessageMixin, UpdateView):
 	model = Banner
 	fields = "__all__"

@@ -11,7 +11,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         fields = ['phone', 'email', 'name', 'refer']
 
     def validate(self, attrs):
-        if attrs.get('parent'):
+        if attrs.get('refer'):
             print("in if", attrs)
             try:
                 attrs['parent'] = User.objects.get(phone=attrs['refer'])
@@ -24,4 +24,10 @@ class UserSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(read_only=True)
     class Meta:
         model = User
-        fields = fields = ['phone', 'email', 'name']
+        fields = ['phone', 'email', 'name']
+
+
+class UserDownlineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'phone', 'email', 'name', 'children', 'parent_id']
