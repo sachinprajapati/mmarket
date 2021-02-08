@@ -1,6 +1,7 @@
 from django.db import models
 from autoslug import AutoSlugField
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import RegexValidator, MaxValueValidator, MinLengthValidator
 from django.urls import reverse_lazy
 
 def directory_path(instance, filename):
@@ -17,3 +18,10 @@ class Banner(models.Model):
 
     def get_update_url(self):
         return reverse_lazy("update_banner", kwargs={'pk': self.pk})
+
+class AvailableAddress(models.Model):
+    pin_regex = RegexValidator(regex=r'^\d{6}$', message="Pincode number must be 6 digits long.")
+    pincode = models.PositiveIntegerField(validators=[pin_regex], unique=True)
+
+    def get_update_url(self):
+        return reverse_lazy('update_pincode', kwargs={'pk': self.pk})

@@ -5,14 +5,13 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class UserCreateSerializer(serializers.ModelSerializer):
-    refer = serializers.CharField(max_length=10, allow_null=True, allow_blank=True)
+    refer = serializers.CharField(max_length=10, allow_null=True, allow_blank=True, write_only=True, required=False)
     class Meta:
         model = User
         fields = ['phone', 'email', 'name', 'refer']
 
     def validate(self, attrs):
         if attrs.get('refer'):
-            print("in if", attrs)
             try:
                 attrs['parent'] = User.objects.get(phone=attrs['refer'])
                 attrs.pop("refer")

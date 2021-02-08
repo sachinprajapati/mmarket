@@ -1,5 +1,5 @@
 from django import forms
-from products.models import Product, Category, ProductImage
+from products.models import Product, Category, ProductImage, StockRecord
 from orders.models import Orders
 
 class AddProduct(forms.ModelForm):
@@ -19,3 +19,8 @@ class OrderStatusForm(forms.ModelForm):
     class Meta:
         model = Orders
         fields = ("order_id", "status")
+
+class StockRecordForm(forms.ModelForm):
+    class Meta:
+        model = StockRecord
+        fields = ("num_in_stock", )

@@ -1,7 +1,10 @@
 from django.db import models
 from autoslug import AutoSlugField
 from django.utils.translation import gettext_lazy as _
+from django.utils.safestring import mark_safe
+from django.utils.html import escape
 from django.urls import reverse_lazy
+
 from PIL import Image
 
 from djrichtextfield.models import RichTextField
@@ -130,6 +133,13 @@ class Product(models.Model):
     def get_update_url(self):
         return reverse_lazy('update_products', kwargs={'pk': self.pk})
 
+    def get_stock_url(self):
+        if not hasattr(self, 'stockrecord'):
+            print("in if")
+            return mark_safe('<a href="%s"><span class="fa fa-plus"></span></a>' % escape(reverse_lazy('product_stock', kwargs={'pk': self.pk})))
+        else:
+            return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(reverse_lazy('update_stock', kwargs={'pk': self.stockrecord.pk})))
+
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images', verbose_name=_("Product"))
     img = models.ImageField(upload_to=directory_path, max_length=255)
@@ -150,3 +160,22 @@ class ProductImage(models.Model):
     #     image = Image.open(instance.img.path)
     #     image.save(instance.img.path, quality=20, optimize=True)
     #     return instance
+
+class StockRecord(models.Model):
+    product = models.OneToOneField(Product, on_delete=models.CASCADE)
+    num_in_stock = models.PositiveIntegerField(
+        _("Number in stock"))
+    #: The amount of stock allocated to orders but not fed back to the master
+    #: stock system.  A typical stock update process will set the
+    #: :py:attr:`.num_in_stock` variable to a new value and reset
+    #: :py:attr:`.num_allocated` to zero.
+    num_allocated = models.IntegerField(
+        _("Number allocated"), default=0)
+
+    #: Threshold for low-stock alerts.  When stock goes beneath this threshold,
+    #: an alert is triggered so warehouse managers can order more.
+    low_stock_threshold = models.PositiveIntegerField(
+        _("Low Stock Threshold"), blank=True, null=True)
+    date_created = models.DateTimeField(_("Date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("Date updated"), auto_now=True,
+                                        db_index=True)

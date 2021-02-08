@@ -15,9 +15,6 @@ urlpatterns = [
     # path('checkout/', Checkout, name="checkout"),
     # path('wishlist/', Wishlist, name="wishlist"),
     # path('login-register/', LoginRegister, name="login-register"),
-    path('sign-in/',
-         auth_view.LoginView.as_view(template_name="atemplates/sign-in.html", redirect_authenticated_user=True),
-         name="sign-in"),
     path('logout/', auth_view.LogoutView.as_view(), name="logout"),
     path('404/', notFound, name="404"),
     # Customers
@@ -28,6 +25,8 @@ urlpatterns = [
     path('add-products/', AddProducts.as_view(), name="add_products"),
     path('product-images/<int:pk>/', AddProductsImages, name="add_product_images"),
     path('edit-products/<int:pk>/', UpdateProducts.as_view(), name="update_products"),
+    path('add-stock/<int:pk>/', AddProductStock.as_view(), name="product_stock"),
+    path('update-stock/<int:pk>/', UpdateProductStock.as_view(), name="update_stock"),
     # ProductsClass
     path('product-class-list/', AllProductClass.as_view(), name="product_class_list"),
     path('add-product-class/', AddProductClass.as_view(), name="add_product_class"),
@@ -48,6 +47,10 @@ urlpatterns = [
     path('banners-list/', AllBanner.as_view(), name="banners_list"),
     path('add-banner/', AddBanner.as_view(), name="add_banner"),
     path('update-banner/<int:pk>/', UpdateBanner.as_view(), name="update_banner"),
+    # pincode
+    path('pincode-list/', PincodeList.as_view(), name="pincode_list"),
+    path('add-pincode/', AddPincode.as_view(), name="add_pincode"),
+    path('update-pincode/<int:pk>/', UpdatePincode.as_view(), name="update_pincode"),
     # Orders
     path('confirmed-orders/', confirmedOrders, name="confirmed-orders"),
     path('packed-orders/', packedOrders, name="packed-orders"),

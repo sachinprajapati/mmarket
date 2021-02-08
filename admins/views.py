@@ -1,12 +1,13 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
-from django.views.generic.edit import UpdateView, DeleteView, CreateView
+from django.views.generic.edit import UpdateView, DeleteView, CreateView, FormView
 from django.views.generic.detail import DetailView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
+from django.db.models import F
 from django.forms import modelformset_factory
 
 from django_tables2 import SingleTableView, SingleTableMixin
@@ -154,11 +155,37 @@ def AddProductsImages(request, pk):
 				instance.product = product
 			formset.save()
 			messages.success(request, 'product images successfully updated')
-			return redirect(reverse_lazy('products_list'))
+			return redirect(reverse_lazy('product_stock', kwargs={'pk': product.pk}))
 	return render(request, template_name, {
 		'formset': formset,
 		'product': product,
 	})
+
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class AddProductStock(SuccessMessageMixin, CreateView):
+	model = StockRecord
+	fields = ('num_in_stock', 'low_stock_threshold')
+	success_message = "product stock record created"
+	template_name = "form_view.html"
+	success_url = reverse_lazy("products_list")
+
+	def form_valid(self, form):
+		form.instance.product = get_object_or_404(Product, pk=self.kwargs['pk'])
+		return super(AddProductStock, self).form_valid(form)
+
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class UpdateProductStock(SuccessMessageMixin, FormView):
+	form_class = StockRecordForm
+	template_name = "form_view.html"
+	success_message = "product stock record updated"
+	success_url = reverse_lazy("products_list")
+
+	def form_valid(self, form):
+		count = form.cleaned_data['num_in_stock']
+		sr = get_object_or_404(StockRecord, pk=self.kwargs['pk'])
+		sr.num_in_stock += count
+		sr.save()
+		return super().form_valid(form)
 
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
@@ -222,6 +249,30 @@ class UpdateBanner(SuccessMessageMixin, UpdateView):
 	template_name = "form_view.html"
 	success_message = "Banner Successfully Updated"
 	success_url = reverse_lazy("banners_list")
+
+# Pincode
+
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class PincodeList(SingleTableView):
+	table_class = AvailableAddressTable
+	model = AvailableAddress
+	template_name = "list_view.html"
+
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class AddPincode(SuccessMessageMixin, CreateView):
+	model = AvailableAddress
+	fields = "__all__"
+	template_name = "form_view.html"
+	success_message = "Pincode Successfully Added"
+	success_url = reverse_lazy("pincode_list")
+
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class UpdatePincode(SuccessMessageMixin, UpdateView):
+	model = AvailableAddress
+	fields = "__all__"
+	template_name = "form_view.html"
+	success_message = "Pincode Successfully Updated"
+	success_url = reverse_lazy("pincode_list")
 
 def addBanner(request):
 	return render(request, 'add-banner.html')
