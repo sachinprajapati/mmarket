@@ -179,3 +179,6 @@ class StockRecord(models.Model):
     date_created = models.DateTimeField(_("Date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("Date updated"), auto_now=True,
                                         db_index=True)
+
+    def get_available(self, n):
+        return (self.num_in_stock-self.num_allocated)>=n

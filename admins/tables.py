@@ -10,6 +10,7 @@ User = get_user_model()
 import itertools
 
 from .models import Banner, AvailableAddress
+from offer.models import Coupon
 
 class ImageColumn(tables.Column):
     def render(self, value):
@@ -118,3 +119,19 @@ class AvailableAddressTable(tables.Table):
 
     def render_get_update_url(self, value):
         return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))
+
+class CouponTables(tables.Table):
+    total_discount = tables.Column(orderable=False)
+    code = tables.Column(orderable=False)
+    get_update_url = tables.Column(verbose_name="Edit", orderable=False)
+    get_absolute_url = tables.Column(orderable=False, verbose_name="Detail")
+    class Meta:
+        model = Coupon
+        template_name = "django_table2/bootstrap.html"
+        fields = ('name', 'code', 'discount_type', 'total_discount', 'date_created', 'get_absolute_url')
+
+    def render_get_update_url(self, value):
+        return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))
+
+    def render_get_absolute_url(self, value):
+        return mark_safe('<a href="%s"><span class="fa fa-info-circle"></span></a>' % escape(value))

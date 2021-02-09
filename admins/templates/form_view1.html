@@ -6,4 +6,5 @@
 
 {% block content %}
     {% crispy form %}
+    <div id='form-errors'>{{ form.errors }}</div>
 {% endblock %}

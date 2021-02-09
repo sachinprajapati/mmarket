@@ -5,6 +5,7 @@ from .models import Cart, CartLine
 from products.serializers import ListProductSerializer
 
 class AddCartSerializer(serializers.ModelSerializer):
+    quantity = serializers.IntegerField(default=1)
     class Meta:
         model = CartLine
         fields = ('product', 'quantity', 'cart')

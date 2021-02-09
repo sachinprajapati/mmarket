@@ -6,6 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.db.models import F
 from django.forms import modelformset_factory
@@ -20,6 +21,7 @@ User = get_user_model()
 
 from products.models import *
 from orders.models import *
+from offer.models import Coupon
 from .tables import *
 from .forms import *
 from .models import *
@@ -285,23 +287,30 @@ class UpdatePincode(SuccessMessageMixin, UpdateView):
 	success_message = "Pincode Successfully Updated"
 	success_url = reverse_lazy("pincode_list")
 
-def addBanner(request):
-	return render(request, 'add-banner.html')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class AddCouponView(SuccessMessageMixin, CreateView):
+	model = Coupon
+	form_class = CouponForm
+	template_name = "form_view1.html"
+	success_url = reverse_lazy('coupon_list')
+	success_message = _("Coupon successfully created")
 
-def editBanner(request):
-	return render(request, 'edit-banner.html')
-# Orders
-def confirmedOrders(request):
-	return render(request, 'confirmed-orders.html')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class ListCouponView(SingleTableView):
+	model = Coupon
+	template_name = "list_view.html"
+	table_class = CouponTables
+	queryset = Coupon.objects.all()
 
-def packedOrders(request):
-	return render(request, 'packed-orders.html')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class UpdateCouponView(SuccessMessageMixin, UpdateView):
+	model = Coupon
+	template_name = "form_view1.html"
+	form_class = CouponForm
+	success_url = reverse_lazy('coupon_list')
+	success_message = _("Coupon successfully updated")
 
-def outfordeliveredOrders(request):
-	return render(request, 'out-for-delivered-orders.html')
-
-def deliveredOrders(request):
-	return render(request, 'delivered-orders.html')
-
-def rejectedOrders(request):
-	return render(request, 'rejected-orders.html')
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class DetailCouponView(DetailView):
+	model = Coupon
+	template_name = "form_view1.html"

@@ -36,14 +36,18 @@ class DetailProductSerializer(serializers.ModelSerializer):
 	categories = CategorySerializer(read_only=True, many=True)
 	attributes = ProductAttributeSerializer(read_only=True, many=True)
 	description = serializers.SerializerMethodField()
+	stockrecord = serializers.SerializerMethodField()
 
 	def get_description(self, instance):
 		from django.utils.html import strip_tags
 		return strip_tags(instance.description)
 
+	def get_stockrecord(self, instance):
+		return hasattr(self, 'stockrecord')
+
 	class Meta:
 	    model = Product
-	    fields = ('id', 'name', 'images', 'mrp', 'price', 'description', 'categories', 'rating', 'date_created', 'attributes')
+	    fields = ('id', 'name', 'images', 'mrp', 'price', 'description', 'categories', 'rating', 'stockrecord','date_created', 'attributes')
 
 class ListBannerSerializer(serializers.ModelSerializer):
 	class Meta:

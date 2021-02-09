@@ -52,9 +52,14 @@ urlpatterns = [
     path('add-pincode/', AddPincode.as_view(), name="add_pincode"),
     path('update-pincode/<int:pk>/', UpdatePincode.as_view(), name="update_pincode"),
     # Orders
-    path('confirmed-orders/', confirmedOrders, name="confirmed-orders"),
-    path('packed-orders/', packedOrders, name="packed-orders"),
-    path('out-for-delivered-orders/', outfordeliveredOrders, name="out-for-delivered-orders"),
-    path('delivered-orders/', deliveredOrders, name="delivered-orders"),
-    path('rejected-orders/', rejectedOrders, name="rejected-orders"),
+    # path('confirmed-orders/', confirmedOrders, name="confirmed-orders"),
+    # path('packed-orders/', packedOrders, name="packed-orders"),
+    # path('out-for-delivered-orders/', outfordeliveredOrders, name="out-for-delivered-orders"),
+    # path('delivered-orders/', deliveredOrders, name="delivered-orders"),
+    # path('rejected-orders/', rejectedOrders, name="rejected-orders"),
+    #coupons
+    path('add-coupon/', AddCouponView.as_view(), name="add_coupon"),
+    path('coupon-list/', ListCouponView.as_view(), name="coupon_list"),
+    path('coupon-update/<int:pk>/', UpdateCouponView.as_view(), name="coupon_update"),
+    path('coupon-detail/<int:pk>/', DetailCouponView.as_view(), name="coupon_detail"),
 ]

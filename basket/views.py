@@ -16,14 +16,18 @@ class CartViewSet(viewsets.ViewSet):
 
     def create(self, request):
         data = request.data
-        if not data.get('product'):
-            return Response({"product": ["This field is required"]}, status=status.HTTP_400_BAD_REQUEST)
-        if CartLine.objects.filter(cart=request.user.cart, product__id=data['product']).exists():
-            return Response({"product": ["product already exists"]}, status=status.HTTP_400_BAD_REQUEST)
         data.update({"cart": request.user.cart.id})
-        print("data is", data)
         serializer = AddCartSerializer(data=data)
         if serializer.is_valid():
+            if CartLine.objects.filter(cart=request.user.cart, product__id=data['product']).exists():
+                return Response({"product": ["product already exists"]}, status=status.HTTP_400_BAD_REQUEST)
+            product = get_object_or_404(Product, pk=data['product'])
+            if not hasattr(product, 'stockrecord'):
+                return Response({"product": ["product out of stock"]}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                if not product.stockrecord.get_available(data.get('quantity', 1)):
+                    return Response({"product": ["product not available"]}, status=status.HTTP_400_BAD_REQUEST)
+            print("data is", data)
             serializer.save()
             return Response(serializer.data)
         else:
@@ -34,6 +38,8 @@ class CartViewSet(viewsets.ViewSet):
         data = request.data
         if not data.get('quantity'):
             return Response({"quantity": "Must Enter Quantity"}, status=status.HTTP_400_BAD_REQUEST)
+        if not product.stockrecord.get_available(data.get('quantity', 1)):
+            return Response({"product": ["product not available"]}, status=status.HTTP_400_BAD_REQUEST)
         cl = get_object_or_404(CartLine, product=product, cart=request.user.cart)
         serializer = ListCartSerializer(cl, data={'quantity': data['quantity']}, partial=True)
         if serializer.is_valid():
