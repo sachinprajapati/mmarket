@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 
 from .models import Address, OrderPayment, Orders, OrderItems
 from basket.models import CartLine
+from admins.models import AvailableAddress
 from .serializers import *
 
 class AddressView(viewsets.ModelViewSet):
@@ -95,3 +96,13 @@ class OrdersView(viewsets.ModelViewSet):
         user = get_object_or_404(queryset, pk=pk)
         serializer = OrderDetailSerializer(user)
         return Response(serializer.data)
+
+class PincodeAvailView(generics.RetrieveAPIView):
+    model = AvailableAddress
+    serializer_class = AvailableAddressSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_object(self):
+        print(self.kwargs)
+        obj = get_object_or_404(AvailableAddress, pincode=self.kwargs['pincode'])
+        return obj

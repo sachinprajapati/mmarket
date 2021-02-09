@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import *
+from admins.models import AvailableAddress
 from products.serializers import ListProductSerializer
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -39,3 +40,8 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Orders
         fields = ('id', 'order_id', 'amount', 'status', 'dt', 'address', 'orderitems_set', 'get_payment_type')
+
+class AvailableAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AvailableAddress
+        fields = ('pincode', )
