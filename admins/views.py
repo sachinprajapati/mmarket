@@ -9,6 +9,8 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
 from django.db.models import F
 from django.forms import modelformset_factory
+from django.forms.utils import ErrorList
+from django import forms
 
 from django_tables2 import SingleTableView, SingleTableMixin
 from django_filters.views import FilterView
@@ -174,18 +176,27 @@ class AddProductStock(SuccessMessageMixin, CreateView):
 		return super(AddProductStock, self).form_valid(form)
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
-class UpdateProductStock(SuccessMessageMixin, FormView):
+class UpdateProductStock(SuccessMessageMixin, UpdateView):
 	form_class = StockRecordForm
-	template_name = "form_view.html"
+	template_name = "form_view1.html"
 	success_message = "product stock record updated"
 	success_url = reverse_lazy("products_list")
 
-	def form_valid(self, form):
-		count = form.cleaned_data['num_in_stock']
-		sr = get_object_or_404(StockRecord, pk=self.kwargs['pk'])
-		sr.num_in_stock += count
-		sr.save()
-		return super().form_valid(form)
+	def get_object(self, queryset=None):
+		return get_object_or_404(StockRecord, pk=self.kwargs['pk'])
+
+	# def form_valid(self, form):
+	# 	count = form.cleaned_data['add_quantity']
+	# 	print("count is ", count)
+	# 	if not count > 0:
+	# 		print("in if")
+	# 		form.add_error('add_quantity', 'dkn kmn')
+	# 	else:
+	# 		print("in else")
+	# 		sr = get_object_or_404(StockRecord, pk=self.kwargs['pk'])
+	# 		sr.num_in_stock += count
+	# 		sr.save()
+	# 	return super().form_valid(form)
 
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')

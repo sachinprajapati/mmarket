@@ -53,6 +53,10 @@ class CheckOutView(APIView):
         else:
             if not Address.objects.filter(pk=data["address"], user=request.user).exists():
                 return Response({"address": "invalid address"}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                add = Address.objects.get(pk=data["address"], user=request.user)
+                if not AvailableAddress.objects.filter(pincode=add.pincode).exists():
+                    return Response({'pincode': 'No Delivery At This Pincode'}, status=status.HTTP_400_BAD_REQUEST)
         if not items.exists():
             return Response({"error": "No item selected to checkout"}, status=status.HTTP_404_NOT_FOUND)
         if not data.get("type"):
