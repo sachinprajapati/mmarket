@@ -43,7 +43,7 @@ class DetailProductSerializer(serializers.ModelSerializer):
 		return strip_tags(instance.description)
 
 	def get_stockrecord(self, instance):
-		return hasattr(self, 'stockrecord')
+		return hasattr(instance, 'stockrecord')
 
 	class Meta:
 	    model = Product
