@@ -66,6 +66,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return reverse_lazy('detail_customer', kwargs={'pk': self.pk})
 
+    def get_downline(self, level):
+        upline = [self.pk]
+        if level > 1:
+            for i in range(level - 1):
+                upline = User.objects.filter(parent_id__in=upline).values_list('id', flat=True)
+        return User.objects.filter(parent_id__in=upline)
+
 def create_cart(sender, instance, created, **kwargs):
     if created:
         c = Cart(user=instance)

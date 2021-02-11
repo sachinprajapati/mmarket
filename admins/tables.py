@@ -88,10 +88,11 @@ class UserList(tables.Table):
     email = tables.Column(orderable=False)
     phone = tables.Column(orderable=False)
     name = tables.Column(orderable=False)
+    parent = tables.Column(verbose_name="Upline")
     class Meta:
         model = User
         template_name = "django_table2/bootstrap.html"
-        fields = ("name", "phone", "email", "is_active", "date_joined", "get_absolute_url")
+        fields = ("name", "phone", "email", "is_active", "parent", "date_joined", "get_absolute_url")
 
     def render_get_absolute_url(self, value):
         return mark_safe('<a href="%s"><span class="fa fa-info-circle"></span></a>' % escape(value))

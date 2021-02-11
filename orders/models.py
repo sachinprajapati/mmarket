@@ -37,11 +37,13 @@ class Address(models.Model):
                % (self.phone, self.house, self.area, self.city, self.state, self.pincode, self.get_type_display())
 
 ORDER_STATUS = [
-    (0, 'Cancelled'),
-    (1, 'Pending'),
-    (2, 'Confirm'),
-    (3, 'Rejected'),
-    (4, 'Completed'),
+    (0, 'Pending'),
+    (1, 'Confirmed'),
+    (2, 'Processing'),
+    (3, 'Shipped'),
+    (4, 'Delivered'),
+    (5, 'Rejected'),
+    (6, 'Canceled'),
 ]
 
 def Order_ID():
@@ -52,7 +54,7 @@ class Orders(models.Model):
     order_id = models.CharField(max_length=20, unique=True, default=Order_ID)
     amount = models.IntegerField()
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    status = models.IntegerField(choices=ORDER_STATUS, default=1, verbose_name=_("Order Status"))
+    status = models.IntegerField(choices=ORDER_STATUS, default=0, verbose_name=_("Order Status"))
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     expected_dt = models.DateField(null=True, verbose_name="Expected Delivery Date")
     dt = models.DateTimeField(auto_now_add=True)
@@ -85,6 +87,8 @@ def place_order(sender, instance, created, **kwargs):
         l = []
         for i in cart_item:
             l.append(OrderItems(order=instance, product=i.product, quantity=i.quantity, price=i.price))
+            i.product.stockrecord.num_allocated += 1
+            i.product.stockrecord.save()
         OrderItems.objects.bulk_create(l)
         cart_item.delete()
 

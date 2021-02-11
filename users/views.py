@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, Http404
 
 from rest_framework import permissions, status, viewsets, generics
 from rest_framework.response import Response
@@ -67,4 +67,8 @@ class Downlines(generics.ListAPIView):
 		return self.request.user
 
 	def get_queryset(self):
-		return User.objects.filter(parent=self.request.user).select_related()
+		level = self.kwargs['level']
+		if not level in range(1,11):
+			raise Http404
+		else:
+			return self.request.user.get_downline(level)

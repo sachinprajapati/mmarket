@@ -43,7 +43,10 @@ class DetailProductSerializer(serializers.ModelSerializer):
 		return strip_tags(instance.description)
 
 	def get_stockrecord(self, instance):
-		return hasattr(instance, 'stockrecord')
+		if hasattr(instance, 'stockrecord'):
+			if instance.stockrecord.num_in_stock-instance.stockrecord.num_allocated>0:
+				return True
+		return False
 
 	class Meta:
 	    model = Product
