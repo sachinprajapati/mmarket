@@ -53,17 +53,18 @@ class OrdersFilter(filters.FilterSet):
     amount__lt = NumberFilter(field_name='amount', lookup_expr='lt')
     class Meta:
         model = Orders
-        fields = ("order_id", "status")
+        fields = ("order_id",)
 
 class OrdersTable(tables.Table):
     customer = tables.Column(orderable=False)
     product_count = tables.Column(verbose_name="No. Products", orderable=False)
     quantities = tables.Column(verbose_name="Total units", orderable=False)
     get_absolute_url = tables.Column(verbose_name="Detail", orderable=False)
+    get_CurrentStatus = tables.Column(verbose_name="Status", orderable=False)
     class Meta:
         model = Orders
         template_name = "django_table2/bootstrap.html"
-        fields = ("order_id", "amount", "status", "product_count", "quantities", "get_absolute_url")
+        fields = ("order_id", "amount", "get_CurrentStatus", "product_count", "quantities", "get_absolute_url")
 
     def render_get_absolute_url(self, value):
         return mark_safe('<a href="%s"><span class="fa fa-info-circle"></span></a>' % escape(value))

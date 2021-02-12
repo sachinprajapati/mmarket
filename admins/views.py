@@ -202,7 +202,7 @@ class UpdateProductStock(SuccessMessageMixin, UpdateView):
 
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
-class UpdateOrders(SuccessMessageMixin, UpdateView):
+class UpdateOrders(SuccessMessageMixin, CreateView):
 	template_name = "form_view.html"
 	form_class = OrderStatusForm
 	success_message = "%(name)s successfully updated"
@@ -210,6 +210,10 @@ class UpdateOrders(SuccessMessageMixin, UpdateView):
 
 	def get_object(self):
 		return Orders.objects.get(pk=self.kwargs.get('pk'))
+
+	def form_valid(self, form):
+		form.instance.product = get_object_or_404(Product, pk=self.kwargs['pk'])
+		return super(UpdateOrders, self).form_valid(form)
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AllOrders(SingleTableMixin, FilterView):

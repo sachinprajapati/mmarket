@@ -38,7 +38,7 @@ urlpatterns = [
     path('delete-categories/<int:pk>/', DeleteCategory.as_view(), name="delete_categories"),
     # Orders
     path('orders-list/', AllOrders.as_view(), name="orders_list"),
-    path('orders-update/<int:pk>/', UpdateOrders.as_view(), name="update_orders"),
+    path('orders-status/<int:pk>/', UpdateOrders.as_view(), name="update_orders"),
     path('order-detail/<int:pk>/', DetailOrders.as_view(), name="detail_orders"),
     #customer
     path('customer-detail/<int:pk>/', DetailCustomer.as_view(), name="detail_customer"),
