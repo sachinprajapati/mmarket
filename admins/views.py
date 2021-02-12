@@ -208,12 +208,18 @@ class UpdateOrders(SuccessMessageMixin, CreateView):
 	success_message = "%(name)s successfully updated"
 	success_url = reverse_lazy('categories-list')
 
-	def get_object(self):
-		return Orders.objects.get(pk=self.kwargs.get('pk'))
+	def get_initial(self):
+		initial = super().get_initial()
+		initial['order_id'] = self.get_object().order_id
+		initial['order'] = self.get_object().pk
+		return initial
 
-	def form_valid(self, form):
-		form.instance.product = get_object_or_404(Product, pk=self.kwargs['pk'])
-		return super(UpdateOrders, self).form_valid(form)
+	def get_object(self):
+		return get_object_or_404(Orders, pk=self.kwargs.get('pk'))
+
+	# def form_valid(self, form):
+	# 	form.instance.product = get_object_or_404(Product, pk=self.kwargs['pk'])
+	# 	return super(UpdateOrders, self).form_valid(form)
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AllOrders(SingleTableMixin, FilterView):

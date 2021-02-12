@@ -52,7 +52,7 @@
                             <div>
                                 <strong>{{ order.order_id }}</strong>
                             </div>
-                            <div>Status :- {{ order.get_status_display }}</div>
+                            <div>Status :- {% for s in order.sorted_status %}{{ s.get_status_display }}<span class="badge badge-info">{{ s.dt }}</span>{% if not forloop.last %} > {% else %}{% endif %}{% endfor %}</div>
                             <div>Expected Delivery :- {{ order.expected_dt }}</div>
                         </div>
                         <div class="col-sm-4">

@@ -20,10 +20,19 @@ class AddProductImage(forms.ModelForm):
         fields = ("img", "caption", "display_order", "product")
 
 class OrderStatusForm(forms.ModelForm):
+    order = forms.IntegerField(widget = forms.HiddenInput(), required = False)
     order_id = forms.CharField(disabled=True)
     class Meta:
         model = OrderStatus
-        fields = ("status",)
+        fields = ("order", "order_id", "status")
+
+    def clean(self):
+        data = self.cleaned_data
+        data['order'] = Orders.objects.get(pk=data['order'])
+        ods = OrderStatus.objects.filter(status=data['status'], order=data['order'])
+        if ods:
+            raise forms.ValidationError({"status": "Order Status Already Exists"})
+        return data
 
 class StockRecordForm(forms.ModelForm):
     num_in_stock = forms.IntegerField(disabled=True)

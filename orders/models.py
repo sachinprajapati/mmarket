@@ -79,6 +79,10 @@ class Orders(models.Model):
     def get_absolute_url(self):
         return reverse_lazy('detail_orders', kwargs={'pk': self.pk})
 
+    @property
+    def sorted_status(self):
+        return self.orderstatus_set.all().order_by('status')
+
 class OrderItems(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
