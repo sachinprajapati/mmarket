@@ -117,3 +117,6 @@ class TrackOrder(generics.RetrieveAPIView):
 
     def get_object(self):
         return get_object_or_404(Orders, pk=self.kwargs['pk'])
+
+    def get_queryset(self):
+        return self.get_object()
