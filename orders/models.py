@@ -7,7 +7,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.db.models.signals import post_save
-from django.db.models import Avg, Count, Min, Sum
+from django.db.models import Avg, Count, Min, Sum, Max
 from django.dispatch import receiver
 
 from products.models import Product
@@ -54,7 +54,6 @@ class Orders(models.Model):
     order_id = models.CharField(max_length=20, unique=True, default=Order_ID)
     amount = models.IntegerField()
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    status = models.IntegerField(choices=ORDER_STATUS, default=0, verbose_name=_("Order Status"))
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     expected_dt = models.DateField(null=True, verbose_name="Expected Delivery Date")
     dt = models.DateTimeField(auto_now_add=True)
@@ -70,6 +69,12 @@ class Orders(models.Model):
         quantities = self.orderitems_set.all().values_list('quantity', flat=True)
         total = sum(quantities)
         return total
+
+    def get_CurrentStatus(self):
+        return self.orderstatus_set.all().order_by('-status')[0].get_status_display()
+
+    def get_Status(self):
+        return self.orderstatus_set.all().order_by('-status')[0].status
 
     def get_absolute_url(self):
         return reverse_lazy('detail_orders', kwargs={'pk': self.pk})
@@ -89,6 +94,8 @@ def place_order(sender, instance, created, **kwargs):
             l.append(OrderItems(order=instance, product=i.product, quantity=i.quantity, price=i.price))
             i.product.stockrecord.num_allocated += 1
             i.product.stockrecord.save()
+            os = OrderStatus(order=instance)
+            os.save()
         OrderItems.objects.bulk_create(l)
         cart_item.delete()
 
@@ -103,6 +110,14 @@ class OrderPayment(models.Model):
     type = models.PositiveIntegerField(choices=PAYMENT_TYPE)
     tid = models.CharField(max_length=255, null=True)
     dt = models.DateTimeField(auto_now_add=True)
+
+class OrderStatus(models.Model):
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    status = models.IntegerField(choices=ORDER_STATUS, default=0, verbose_name=_("Order Status"))
+    dt  = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('order', 'status',)
 
 
 

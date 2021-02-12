@@ -20,13 +20,13 @@ class OrdersSerializer(serializers.ModelSerializer):
         exclude = ('dt',)
 
 class OrdersListSerializer(serializers.ModelSerializer):
-    # status = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField('get_Status')
     class Meta:
         model = Orders
         fields = ('id', 'order_id', 'amount', 'status', 'get_payment_type', 'expected_dt', 'dt')
 
-    # def get_status(self, obj):
-    #     return obj.get_status_display()
+    def get_Status(self, obj):
+        return obj.get_Status()
 
 class OrderItemsSerializer(serializers.ModelSerializer):
     product = ListProductSerializer(read_only=True)
@@ -37,11 +37,26 @@ class OrderItemsSerializer(serializers.ModelSerializer):
 class OrderDetailSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
     orderitems_set = OrderItemsSerializer(read_only=True, many=True)
+    status = serializers.SerializerMethodField('get_Status')
     class Meta:
         model = Orders
         fields = ('id', 'order_id', 'amount', 'status', 'dt', 'address', 'orderitems_set', 'get_payment_type')
+
+    def get_Status(self, obj):
+        return obj.get_Status()
 
 class AvailableAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = AvailableAddress
         fields = ('pincode', )
+
+class TrackOrder(serializers.ModelSerializer):
+    class Meta:
+        model = OrderStatus
+        fields = ('status', 'dt')
+
+class TrackOrderSerializer(serializers.ModelSerializer):
+    orderstatus_set = TrackOrder(many=True, read_only=True)
+    class Meta:
+        model = Orders
+        fields = ('order_id', 'amount', 'orderstatus_set')

@@ -97,8 +97,8 @@ class OrdersView(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk=None):
         queryset = Orders.objects.filter(customer=request.user)
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = OrderDetailSerializer(user)
+        order = get_object_or_404(queryset, pk=pk)
+        serializer = OrderDetailSerializer(order)
         return Response(serializer.data)
 
 class PincodeAvailView(generics.RetrieveAPIView):
@@ -110,3 +110,10 @@ class PincodeAvailView(generics.RetrieveAPIView):
         print(self.kwargs)
         obj = get_object_or_404(AvailableAddress, pincode=self.kwargs['pincode'])
         return obj
+
+class TrackOrder(generics.RetrieveAPIView):
+    model = Orders
+    serializer_class = TrackOrderSerializer
+
+    def get_object(self):
+        return get_object_or_404(Orders, pk=self.kwargs['pk'])

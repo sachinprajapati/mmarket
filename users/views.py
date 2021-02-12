@@ -39,7 +39,6 @@ class CustomAuthToken(ObtainAuthToken):
 
 	def post(self, request, *args, **kwargs):
 	    data = request.data
-	    print("data is",data)
 	    if not data.get('phone') or not data.get('otp'):
 	    	return Response({'phone': ["This field is required."], 'otp': ["This field is required."]}, status=status.HTTP_404_NOT_FOUND)
 	    user = get_object_or_404(get_user_model(), phone=data['phone'])
