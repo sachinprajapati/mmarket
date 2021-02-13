@@ -14,5 +14,6 @@ urlpatterns = [
     path('login/', CustomAuthToken.as_view()),
     path('send-otp/', SendOTP.as_view()),
     path('profile/', ProfileView.as_view()),
-    path('downlines/<int:level>/', Downlines.as_view())
+    path('downlines/<int:level>/', Downlines.as_view()),
+    path('wallet/history/', WalletHistoryView.as_view())
 ]

@@ -22,17 +22,34 @@ class AddProductImage(forms.ModelForm):
 class OrderStatusForm(forms.ModelForm):
     order = forms.IntegerField(widget = forms.HiddenInput(), required = False)
     order_id = forms.CharField(disabled=True)
-    expected_datetime = forms.DateField()
+    expected_datetime = forms.DateField(widget = forms.TextInput(attrs={'type': 'date'}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('order_id', css_class='form-group col-4 mb-0'),
+                Column('status', css_class='form-group col-4 mb-0'),
+                Column('expected_datetime', css_class='form-group col-4 mb-0'),
+                Column('order', css_class=''),
+                css_class='form-row'
+            ),
+            Submit('submit', 'Submit', css_class='btn btn-primary')
+        )
     class Meta:
         model = OrderStatus
         fields = ("order", "order_id", "status", "expected_datetime")
 
     def clean(self):
         data = self.cleaned_data
+        print("data is ", data)
         data['order'] = Orders.objects.get(pk=data['order'])
         ods = OrderStatus.objects.filter(status=data['status'], order=data['order'])
         if ods:
             raise forms.ValidationError({"status": "Order Status Already Exists"})
+        data['order'].expected_dt = data['expected_datetime']
+        data['order'].save()
         return data
 
 class StockRecordForm(forms.ModelForm):

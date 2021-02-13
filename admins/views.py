@@ -190,7 +190,7 @@ class UpdateProductStock(SuccessMessageMixin, UpdateView):
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class UpdateOrders(SuccessMessageMixin, CreateView):
-	template_name = "form_view.html"
+	template_name = "form_view1.html"
 	form_class = OrderStatusForm
 	success_message = "Status successfully updated"
 	success_url = reverse_lazy('orders_list')
@@ -199,6 +199,8 @@ class UpdateOrders(SuccessMessageMixin, CreateView):
 		initial = super().get_initial()
 		initial['order_id'] = self.get_object().order_id
 		initial['order'] = self.get_object().pk
+		initial['expected_datetime'] = self.get_object().expected_dt if self.get_object().expected_dt else None
+		initial['status'] = self.get_object().get_Status()
 		return initial
 
 	def get_object(self):

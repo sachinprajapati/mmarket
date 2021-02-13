@@ -71,3 +71,10 @@ class Downlines(generics.ListAPIView):
 			raise Http404
 		else:
 			return self.request.user.get_downline(level)
+
+class WalletHistoryView(generics.ListAPIView):
+	model = WalletHistory
+	serializer_class = WalletLogs
+
+	def get_queryset(self):
+		return self.model.objects.filter(wallet__user=self.request.user).order_by('-dt')

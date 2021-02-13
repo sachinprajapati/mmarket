@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse_lazy
 
 from basket.models import Cart
+from orders.models import Orders
 
 class MyUserManager(BaseUserManager):
     def create_user(self, phone, name, password=None):
@@ -66,6 +67,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return reverse_lazy('detail_customer', kwargs={'pk': self.pk})
 
+    def balance(self):
+        return self.wallet.bal if hasattr(self, 'wallet') else 0
+
     def get_downline(self, level):
         upline = [self.pk]
         if level > 1:
@@ -76,6 +80,19 @@ class User(AbstractBaseUser, PermissionsMixin):
 def create_cart(sender, instance, created, **kwargs):
     if created:
         c = Cart(user=instance)
+        w = Wallet(user=instance)
         c.save()
+        w.save()
 
 post_save.connect(create_cart, sender=User)
+
+class Wallet(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bal = models.DecimalField(max_digits=12, decimal_places=4, verbose_name=_("Wallet Balance"), default=0)
+
+class WalletHistory(models.Model):
+    wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    prev_bal = models.DecimalField(max_digits=12, decimal_places=4, verbose_name=_("Previous Balace"))
+    amount = models.DecimalField(max_digits=10, decimal_places=4, verbose_name=_("Amount Added"))
+    dt = models.DateTimeField(auto_now_add=True)
