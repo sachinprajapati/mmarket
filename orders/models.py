@@ -70,6 +70,7 @@ class Orders(models.Model):
         total = sum(quantities)
         return total
 
+    @property
     def get_CurrentStatus(self):
         return self.orderstatus_set.all().order_by('-status')[0].get_status_display()
 

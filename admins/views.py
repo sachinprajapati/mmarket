@@ -187,26 +187,13 @@ class UpdateProductStock(SuccessMessageMixin, UpdateView):
 	def get_object(self, queryset=None):
 		return get_object_or_404(StockRecord, pk=self.kwargs['pk'])
 
-	# def form_valid(self, form):
-	# 	count = form.cleaned_data['add_quantity']
-	# 	print("count is ", count)
-	# 	if not count > 0:
-	# 		print("in if")
-	# 		form.add_error('add_quantity', 'dkn kmn')
-	# 	else:
-	# 		print("in else")
-	# 		sr = get_object_or_404(StockRecord, pk=self.kwargs['pk'])
-	# 		sr.num_in_stock += count
-	# 		sr.save()
-	# 	return super().form_valid(form)
-
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class UpdateOrders(SuccessMessageMixin, CreateView):
 	template_name = "form_view.html"
 	form_class = OrderStatusForm
-	success_message = "%(name)s successfully updated"
-	success_url = reverse_lazy('categories-list')
+	success_message = "Status successfully updated"
+	success_url = reverse_lazy('orders_list')
 
 	def get_initial(self):
 		initial = super().get_initial()

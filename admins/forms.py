@@ -22,9 +22,10 @@ class AddProductImage(forms.ModelForm):
 class OrderStatusForm(forms.ModelForm):
     order = forms.IntegerField(widget = forms.HiddenInput(), required = False)
     order_id = forms.CharField(disabled=True)
+    expected_datetime = forms.DateField()
     class Meta:
         model = OrderStatus
-        fields = ("order", "order_id", "status")
+        fields = ("order", "order_id", "status", "expected_datetime")
 
     def clean(self):
         data = self.cleaned_data

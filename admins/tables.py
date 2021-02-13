@@ -1,7 +1,8 @@
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
+from django.db import connection
 from products.models import Category, Product, ProductClass
-from orders.models import Orders
+from orders.models import Orders, ORDER_STATUS, OrderStatus
 
 import django_tables2 as tables
 from django_filters import rest_framework as filters, NumberFilter, ChoiceFilter
@@ -51,9 +52,19 @@ class ProductCLassTable(tables.Table):
 class OrdersFilter(filters.FilterSet):
     amount__gt = NumberFilter(field_name='amount', lookup_expr='gt')
     amount__lt = NumberFilter(field_name='amount', lookup_expr='lt')
+    status = ChoiceFilter(choices=ORDER_STATUS, method='status_filter')
+
+    def status_filter(self, queryset, name, value):
+        cursor = connection.cursor()
+        cursor.execute('SELECT orders_orders.id as id FROM orders_orders left join orders_orderstatus on \
+                            orders_orders.id=orders_orderstatus.order_id GROUP BY orders_orders.id HAVING \
+                            MAX(orders_orderstatus.status)=%s;' % value)
+        row = [i[0] for i in cursor.fetchall()]
+        return queryset.filter(id__in=row)
+
     class Meta:
         model = Orders
-        fields = ("order_id",)
+        fields = ("order_id", "status", "customer__phone")
 
 class OrdersTable(tables.Table):
     customer = tables.Column(orderable=False)
