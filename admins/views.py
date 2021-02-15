@@ -25,6 +25,7 @@ from offer.models import Coupon
 from .tables import *
 from .forms import *
 from .models import *
+from users.models import Maintance
 
 # Create your views here.
 @staff_member_required(login_url=reverse_lazy('login'))
@@ -313,3 +314,13 @@ class UpdateCouponView(SuccessMessageMixin, UpdateView):
 class DetailCouponView(DetailView):
 	model = Coupon
 	template_name = "form_view1.html"
+
+class UpdateDebug(SuccessMessageMixin, UpdateView):
+	model = Maintance
+	success_url = reverse_lazy('dashboard')
+	success_message = "Application Status Successfully updated"
+	template_name = "form_view.html"
+	fields = ("status",)
+
+	def get_object(self, queryset=None):
+		return self.model.objects.filter(status__in=[True, False])[0]

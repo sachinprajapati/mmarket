@@ -51,6 +51,8 @@ urlpatterns = [
     path('pincode-list/', PincodeList.as_view(), name="pincode_list"),
     path('add-pincode/', AddPincode.as_view(), name="add_pincode"),
     path('update-pincode/<int:pk>/', UpdatePincode.as_view(), name="update_pincode"),
+    #Maintance
+    path('update-status/', UpdateDebug.as_view(), name="debug"),
     # Orders
     # path('confirmed-orders/', confirmedOrders, name="confirmed-orders"),
     # path('packed-orders/', packedOrders, name="packed-orders"),

@@ -127,3 +127,6 @@ class WalletHistory(models.Model):
     dt = models.DateTimeField(auto_now_add=True)
 
     unique_together = ['wallet', 'order']
+
+class Maintance(models.Model):
+    status = models.BooleanField(default=False)

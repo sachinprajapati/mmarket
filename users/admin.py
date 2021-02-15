@@ -9,3 +9,4 @@ class UserAdmin(admin.ModelAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(Wallet)
 admin.site.register(WalletHistory)
+admin.site.register(Maintance)

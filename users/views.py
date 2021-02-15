@@ -11,6 +11,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 from .serializers import *
+from .models import Maintance
 
 class UserViewSet(generics.CreateAPIView):
 	model = User
@@ -78,3 +79,9 @@ class WalletHistoryView(generics.ListAPIView):
 
 	def get_queryset(self):
 		return self.model.objects.filter(wallet__user=self.request.user).order_by('-dt')
+
+class DebugView(generics.RetrieveAPIView):
+	model = Maintance
+
+	def get_object(self):
+		return self.model.objects.filter()[0].status if self.model.objects.filter().exists() else False
