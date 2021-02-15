@@ -120,3 +120,19 @@ class TrackOrder(generics.RetrieveAPIView):
 
     def get_queryset(self):
         return self.get_object()
+
+class CancelOrder(generics.CreateAPIView):
+    model = OrderStatus
+    serializer_class = CancelOrderSerializer
+
+    def post(self, request, *args, **kwargs):
+        print(self.request.user)
+        order = get_object_or_404(Orders, pk=self.kwargs['pk'], customer=self.request.user)
+        print("order is", order)
+        if order.get_Status()>1:
+            return Response({"status": ["can't cancel this order"]}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = CancelOrderSerializer(data={'order': order.pk, 'status':6})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

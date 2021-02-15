@@ -12,7 +12,8 @@ urlpatterns = [
 	path('', include(router.urls)),
 	path('checkout/', CheckOutView.as_view()),
 	path('track-order/<int:pk>/', TrackOrder.as_view()),
-	path('pincode-available/<int:pincode>/', PincodeAvailView.as_view())
+	path('pincode-available/<int:pincode>/', PincodeAvailView.as_view()),
+	path('cancel-order/<int:pk>/', CancelOrder.as_view()),
 	# path('orders/', OrdersView.as_view()),
     # path('cart/add/', AddTOCart.as_view()),
 ]

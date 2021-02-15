@@ -60,3 +60,8 @@ class TrackOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Orders
         fields = ('order_id', 'amount', 'orderstatus_set')
+
+class CancelOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderStatus
+        fields = ('order', 'status')
