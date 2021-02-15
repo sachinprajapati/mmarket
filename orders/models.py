@@ -83,7 +83,7 @@ class Orders(models.Model):
         return self.orderstatus_set.all().order_by('status')
 
     def update_wallet(self):
-        self.customer.make_commision(self.amount)
+        self.customer.make_commision(self.amount, self)
 
 class OrderItems(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)
@@ -124,6 +124,9 @@ class OrderStatus(models.Model):
 
     class Meta:
         unique_together = ('order', 'status',)
+
+    def __str__(self):
+        return 'order {} status {}'.format(self.order, self.get_status_display())
 
 @receiver(post_save, sender=OrderStatus)
 def Commision(sender, instance, created, **kwargs):
