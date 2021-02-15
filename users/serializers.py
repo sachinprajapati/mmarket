@@ -5,7 +5,6 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 from .models import Wallet, WalletHistory
-from orders.serializers import TrackOrderSerializer
 
 class UserCreateSerializer(serializers.ModelSerializer):
     refer = serializers.CharField(max_length=10, allow_null=True, allow_blank=True, write_only=True, required=False)
@@ -40,7 +39,6 @@ class UserDownlineSerializer(serializers.ModelSerializer):
         fields = ['id', 'phone', 'email', 'name', 'children', 'parent_id']
 
 class WalletLogs(serializers.ModelSerializer):
-    order = TrackOrderSerializer()
     class Meta:
         model = WalletHistory
-        fields = ("order", "prev_bal", "amount", "dt")
+        fields = ("prev_bal", "amount", "dt")
