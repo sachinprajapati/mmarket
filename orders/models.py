@@ -5,9 +5,7 @@ from django.urls import reverse_lazy
 
 from django.conf import settings
 from django.utils import timezone
-from django.utils.html import strip_tags
 from django.db.models.signals import post_save
-from django.db.models import Avg, Count, Min, Sum, Max
 from django.dispatch import receiver
 
 from products.models import Product
@@ -84,6 +82,9 @@ class Orders(models.Model):
     def sorted_status(self):
         return self.orderstatus_set.all().order_by('status')
 
+    def update_wallet(self):
+        self.customer.make_commision(self.amount)
+
 class OrderItems(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -123,6 +124,11 @@ class OrderStatus(models.Model):
 
     class Meta:
         unique_together = ('order', 'status',)
+
+@receiver(post_save, sender=OrderStatus)
+def Commision(sender, instance, created, **kwargs):
+    if created and instance.status == 4:
+        instance.order.update_wallet()
 
 
 

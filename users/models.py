@@ -5,6 +5,10 @@ from django.core.validators import RegexValidator
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse_lazy
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
+from mmarket.settings import Commision_Rate, Limit_Upline
+from decimal import Decimal as dc
 
 from basket.models import Cart
 from orders.models import Orders
@@ -70,6 +74,22 @@ class User(AbstractBaseUser, PermissionsMixin):
     def balance(self):
         return self.wallet.bal if hasattr(self, 'wallet') else 0
 
+    def make_commision(self, amount):
+        com = (amount * Commision_Rate) / 100
+        count = 0
+        user = self.parent if self.parent else None
+        for i in range(Limit_Upline):
+            if user is None:
+                break
+            print(user, "children of", user.parent)
+            wallet, created = Wallet.objects.get_or_create(user=user)
+            wallet.bal += dc(com)
+            wallet.save()
+            user = user.parent
+            count += 1
+        print("total people", count)
+        print("total commision", com, "for each", com / count)
+
     def get_downline(self, level):
         upline = [self.pk]
         if level > 1:
@@ -90,9 +110,14 @@ class Wallet(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bal = models.DecimalField(max_digits=12, decimal_places=4, verbose_name=_("Wallet Balance"), default=0)
 
+@receiver(pre_save, sender=Wallet)
+def wallet_history(sender, instance, **kwargs):
+    print(instance.bal)
+
+
 class WalletHistory(models.Model):
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
-    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE, null=True)
     prev_bal = models.DecimalField(max_digits=12, decimal_places=4, verbose_name=_("Previous Balace"))
     amount = models.DecimalField(max_digits=10, decimal_places=4, verbose_name=_("Amount Added"))
     dt = models.DateTimeField(auto_now_add=True)
