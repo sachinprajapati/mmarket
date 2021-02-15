@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-from .models import Wallet, WalletHistory
+from .models import Wallet, WalletHistory, Maintance
 
 class UserCreateSerializer(serializers.ModelSerializer):
     refer = serializers.CharField(max_length=10, allow_null=True, allow_blank=True, write_only=True, required=False)
@@ -42,3 +42,8 @@ class WalletLogs(serializers.ModelSerializer):
     class Meta:
         model = WalletHistory
         fields = ("prev_bal", "amount", "dt")
+
+class DebugSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Maintance
+        fields = ("status", )

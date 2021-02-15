@@ -82,6 +82,7 @@ class WalletHistoryView(generics.ListAPIView):
 
 class DebugView(generics.RetrieveAPIView):
 	model = Maintance
+	serializer_class = DebugSerializer
 
 	def get_object(self):
-		return self.model.objects.filter()[0].status if self.model.objects.filter().exists() else False
+		return self.model.objects.filter()[0]
