@@ -131,6 +131,9 @@ class OrderStatus(models.Model):
 @receiver(post_save, sender=OrderStatus)
 def Commision(sender, instance, created, **kwargs):
     if created and instance.status == 4:
+        for p in instance.order.orderitems_set.all():
+            p.product.stockrecord.num_in_stock -= p.quantity
+            p.product.stockrecord.save()
         instance.order.update_wallet()
 
 

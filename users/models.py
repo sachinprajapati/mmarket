@@ -85,15 +85,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         com = tota_com/count
         user = self.parent if self.parent else None
         for i in range(count):
-            print(user, "children of", user.parent)
+            if user is None:
+                break
             wallet, created = Wallet.objects.get_or_create(user=user)
-            wh = WalletHistory(wallet=wallet, order=order, prev_bal=wallet.bal, amount=com)
-            wallet.bal += dc(com)
-            wh.save()
+            if not WalletHistory.objects.filter(wallet=wallet, order=order).exists():
+                wh = WalletHistory(wallet=wallet, order=order, prev_bal=wallet.bal, amount=com)
+                wallet.bal += dc(com)
+                wh.save()
             wallet.save()
             user = user.parent
-        print("total people", count)
-        print("total commision", tota_com, "for each", com)
 
     def get_downline(self, level):
         upline = [self.pk]
@@ -118,10 +118,6 @@ class Wallet(models.Model):
     def __str__(self):
         return '{} -> {}'.format(self.user, self.bal)
 
-@receiver(pre_save, sender=Wallet)
-def wallet_history(sender, instance, **kwargs):
-    print(instance.bal)
-
 
 class WalletHistory(models.Model):
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
@@ -129,3 +125,5 @@ class WalletHistory(models.Model):
     prev_bal = models.DecimalField(max_digits=12, decimal_places=4, verbose_name=_("Previous Balace"))
     amount = models.DecimalField(max_digits=10, decimal_places=4, verbose_name=_("Amount Added"))
     dt = models.DateTimeField(auto_now_add=True)
+
+    unique_together = ['wallet', 'order']
