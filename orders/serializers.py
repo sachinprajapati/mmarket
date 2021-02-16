@@ -65,3 +65,10 @@ class CancelOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderStatus
         fields = ('order', 'status')
+
+    def create(self, validated_data):
+        obj = OrderStatus.objects.create(**validated_data)
+        for p in obj.order.orderitems_set.all():
+            p.product.stockrecord.num_allocated -= p.quantity
+            p.product.stockrecord.save()
+        return obj
