@@ -18,12 +18,12 @@ class ImageColumn(tables.Column):
          return mark_safe('<img src="%s" width="60px;">' % escape(value.url))
 
 class CategoryTable(tables.Table):
-    # img = ImageColumn(orderable=False, verbose_name="Image")
+    img = ImageColumn(orderable=False, verbose_name="Image")
     get_update_url = tables.Column(verbose_name='Edit', orderable=False)
     class Meta:
         model = Category
         template_name = "django_table2/bootstrap.html"
-        fields = ("name", "parent", "get_update_url")
+        fields = ("name", "parent", "img", "get_update_url")
 
     def render_get_update_url(self, value):
         return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))
