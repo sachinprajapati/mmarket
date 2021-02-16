@@ -320,7 +320,12 @@ class UpdateDebug(SuccessMessageMixin, UpdateView):
 	success_url = reverse_lazy('dashboard')
 	success_message = "Application Status Successfully updated"
 	template_name = "form_view.html"
-	fields = ("status",)
+	fields = ("status","message")
 
 	def get_object(self, queryset=None):
-		return self.model.objects.filter(status__in=[True, False])[0]
+		if self.model.objects.filter(status__in=[True, False]).exists():
+			return self.model.objects.filter()[0]
+		else:
+			obj = self.model.objects.create()
+			obj.save()
+			return obj

@@ -130,3 +130,4 @@ class WalletHistory(models.Model):
 
 class Maintance(models.Model):
     status = models.BooleanField(default=False)
+    message = models.TextField(null=True)

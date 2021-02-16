@@ -85,4 +85,5 @@ class DebugView(generics.RetrieveAPIView):
 	serializer_class = DebugSerializer
 
 	def get_object(self):
-		return self.model.objects.filter()[0]
+		if self.model.objects.filter(status__isnull=False).exists():
+			return self.model.objects.filter()[0]

@@ -46,4 +46,4 @@ class WalletLogs(serializers.ModelSerializer):
 class DebugSerializer(serializers.ModelSerializer):
     class Meta:
         model = Maintance
-        fields = ("status", )
+        fields = ("status", "message")
