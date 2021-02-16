@@ -106,7 +106,6 @@ class AllCategories(SingleTableView):
 	queryset = Category.objects.all()
 	template_name = 'list_view.html'
 	table_class = CategoryTable
-	table_pagination = False
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class UpdateCategory(SuccessMessageMixin, UpdateView):
