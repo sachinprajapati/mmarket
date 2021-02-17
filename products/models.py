@@ -27,15 +27,15 @@ class Category(models.Model):
         verbose_name_plural = "categories"  
 
     def get_slug(self):
-        return self.slug   
+        return self.slug
 
-    def __str__(self):                           
-        full_path = [self.name]                  
-        k = self.parent
-        while k is not None:
-            full_path.append(k.name)
-            k = k.parent
-        return ' -> '.join(full_path[::-1])
+    # def __str__(self):
+    #     full_path = [self.name]
+    #     k = self.parent
+    #     while k is not None:
+    #         full_path.append(k.name)
+    #         k = k.parent
+    #     return ' -> '.join(full_path[::-1])
 
     def get_update_url(self):
         return reverse_lazy('update_category', kwargs={'pk': self.pk})
