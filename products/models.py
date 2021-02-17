@@ -37,6 +37,9 @@ class Category(models.Model):
     #         k = k.parent
     #     return ' -> '.join(full_path[::-1])
 
+    def __str__(self):
+        return self.name
+
     def get_update_url(self):
         return reverse_lazy('update_category', kwargs={'pk': self.pk})
 
