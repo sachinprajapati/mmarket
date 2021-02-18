@@ -5,8 +5,6 @@ from django.utils.safestring import mark_safe
 from django.utils.html import escape
 from django.urls import reverse_lazy
 
-from PIL import Image
-
 from djrichtextfield.models import RichTextField
 
 def directory_path(instance, filename):

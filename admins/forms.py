@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from django.db import connection
 from products.models import Product, Category, ProductImage, StockRecord
 from orders.models import Orders, OrderStatus
 from offer.models import Coupon
@@ -9,10 +10,43 @@ from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Row, Col
 
 class AddProduct(forms.ModelForm):
     categories = forms.ModelMultipleChoiceField(queryset=Category.objects.filter(parent__isnull=False))
-    field_order = ['name', 'upc', 'password', 'is_public', 'description', 'product_class', 'attributes', 'categories', 'mrp', 'price', 'is_discountable']
+    field_order = ['name', 'upc', 'is_public', 'description', 'product_class', 'attributes', 'categories', 'mrp', 'price', 'is_discountable']
     class Meta:
         model = Product
         fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('name', css_class='form-group col-6 mb-0'),
+                Column('upc', css_class='form-group col-6 mb-0'),
+                Column('order', css_class=''),
+                css_class='form-row'
+            ),
+            Row(
+                Column('description', css_class='form-group col-8 mb-0'),
+                Column('attributes', css_class='form-group col-4 mb-0'),
+                Column('order', css_class=''),
+                css_class='form-row'
+            ),
+            Row(
+                Column('product_class', css_class='form-group col-4 mb-0'),
+                Column('categories', css_class='form-group col-4 mb-0'),
+                Column('is_public', css_class='form-group col-4 mb-0'),
+                Column('order', css_class=''),
+                css_class='form-row'
+            ),
+            Row(
+                Column('mrp', css_class='form-group col-4 mb-0'),
+                Column('price', css_class='form-group col-4 mb-0'),
+                Column('is_discountable', css_class='form-group col-4 mb-0'),
+                Column('order', css_class=''),
+                css_class='form-row'
+            ),
+            Submit('submit', 'Submit', css_class='btn btn-primary')
+        )
 
 class AddProductImage(forms.ModelForm):
     class Meta:
@@ -30,7 +64,7 @@ class OrderStatusForm(forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 Column('order_id', css_class='form-group col-4 mb-0'),
-                Column('status', css_class='form-group col-4 mb-0'),
+                Column('AddProduct', css_class='form-group col-4 mb-0'),
                 Column('expected_datetime', css_class='form-group col-4 mb-0'),
                 Column('order', css_class=''),
                 css_class='form-row'
@@ -123,3 +157,25 @@ class CouponForm(forms.ModelForm):
     class Meta:
         model = Coupon
         fields = "__all__"
+
+class CategoryForm(forms.ModelForm):
+    cursor = connection.cursor()
+    cursor.execute("""SELECT a.id, 
+                CASE
+                    WHEN b.id is not null THEN CONCAT(b.name , ' > ', a.name)
+                    ELSE a.name
+                END
+                FROM products_category AS a LEFT JOIN products_category AS b on a.parent_id = b.id order by \
+                (CASE WHEN b.id is not null THEN b.name END , a.name)""")
+    CHOICE_LIST = cursor.fetchall()
+    CHOICE_LIST.insert(0, ('', '----'))
+    parent = forms.ChoiceField(choices=CHOICE_LIST, required=False)
+    class Meta:
+        model = Category
+        fields = ('name', 'parent', 'img')
+
+    def clean_parent(self):
+        if self.cleaned_data['parent'] != "":
+            c = Category.objects.get(pk=self.cleaned_data['parent'])
+            return c
+        return None

@@ -10,16 +10,24 @@ class UserCreateSerializer(serializers.ModelSerializer):
     refer = serializers.CharField(max_length=10, allow_null=True, allow_blank=True, write_only=True, required=False)
     class Meta:
         model = User
-        fields = ['phone', 'email', 'name', 'refer']
+        fields = ['phone', 'email', 'name', 'parent', 'refer']
 
     def validate(self, attrs):
         if attrs.get('refer'):
             try:
                 attrs['parent'] = User.objects.get(phone=attrs['refer'])
-                attrs.pop("refer")
             except Exception as e:
                 raise serializers.ValidationError({"refer": e})
+        try:
+            attrs.pop('refer')
+        except Exception as e:
+            print(e)
         return attrs
+
+    def validate_refer(self, data):
+        if data:
+            return data
+        return None
 
 # class WalletSerializer(serializers.ModelSerializer):
 #     class Meta:

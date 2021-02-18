@@ -22,7 +22,7 @@ class CategoryTable(tables.Table):
     get_update_url = tables.Column(verbose_name='Edit', orderable=False)
     class Meta:
         model = Category
-        template_name = "django_table2/bootstrap.html"
+        attrs = {"class": "table table-hover table-bordered table-sm"}
         fields = ("name", "parent", "img", "get_update_url")
 
     def render_get_update_url(self, value):
@@ -33,7 +33,7 @@ class ProductTable(tables.Table):
     get_stock_url  = tables.Column(verbose_name='Stock', orderable=False)
     class Meta:
         model = Product
-        template_name = "django_table2/bootstrap.html"
+        attrs = {"class": "table table-hover table-bordered table-sm"}
         fields = ("name", "price", "product_class", "categories", "get_update_url", "get_stock_url")
 
     def render_get_update_url(self, value):
@@ -43,7 +43,7 @@ class ProductCLassTable(tables.Table):
     get_update_url  = tables.Column(verbose_name='Edit', orderable=False)
     class Meta:
         model = ProductClass
-        template_name = "django_table2/bootstrap.html"
+        attrs = {"class": "table table-hover table-bordered table-sm"}
         fields = ("name", "price", "product_class", "categories", "get_update_url")
 
     def render_get_update_url(self, value):
@@ -64,6 +64,7 @@ class OrdersFilter(filters.FilterSet):
 
     class Meta:
         model = Orders
+        attrs = {"class": "table table-hover table-bordered table-sm"}
         fields = ("order_id", "status", "customer__phone")
 
 class OrdersTable(tables.Table):
@@ -74,7 +75,7 @@ class OrdersTable(tables.Table):
     get_CurrentStatus = tables.Column(verbose_name="Status", orderable=False)
     class Meta:
         model = Orders
-        template_name = "django_table2/bootstrap.html"
+        attrs = {"class": "table table-hover table-bordered table-sm"}
         fields = ("order_id", "amount", "get_CurrentStatus", "product_count", "quantities", "get_absolute_url")
 
     def render_get_absolute_url(self, value):
@@ -93,6 +94,7 @@ class UsersFilter(filters.FilterSet):
     is_active = ChoiceFilter(choices=USER_STATUS)
     class Meta:
         model = User
+        attrs = {"class": "table table-hover table-bordered table-sm"}
         fields = ("phone", "email", "is_active")
 
 class UserList(tables.Table):
@@ -103,7 +105,7 @@ class UserList(tables.Table):
     parent = tables.Column(verbose_name="Upline")
     class Meta:
         model = User
-        template_name = "django_table2/bootstrap.html"
+        attrs = {"class": "table table-hover table-bordered table-sm"}
         fields = ("name", "phone", "email", "is_active", "parent", "date_joined", "get_absolute_url")
 
     def render_get_absolute_url(self, value):
@@ -114,7 +116,7 @@ class BannerTables(tables.Table):
     img = tables.Column(orderable=False)
     class Meta:
         model = Banner
-        template_name = "django_table2/bootstrap.html"
+        attrs = {"class": "table table-hover table-bordered table-sm"}
         fields = ("img", "caption", "order", "get_update_url")
 
     def render_img(self, value):
@@ -127,7 +129,7 @@ class AvailableAddressTable(tables.Table):
     get_update_url = tables.Column(verbose_name="Edit", orderable=False)
     class Meta:
         model = AvailableAddress
-        template_name = "django_table2/bootstrap.html"
+        attrs = {"class": "table table-hover table-bordered table-sm"}
         fields = ("pincode", )
 
     def render_get_update_url(self, value):
@@ -140,7 +142,7 @@ class CouponTables(tables.Table):
     get_absolute_url = tables.Column(orderable=False, verbose_name="Detail")
     class Meta:
         model = Coupon
-        template_name = "django_table2/bootstrap.html"
+        attrs = {"class": "table table-hover table-bordered table-sm"}
         fields = ('name', 'code', 'discount_type', 'total_discount', 'date_created', 'get_absolute_url')
 
     def render_get_update_url(self, value):

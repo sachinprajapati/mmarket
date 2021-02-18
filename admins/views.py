@@ -23,9 +23,8 @@ from products.models import *
 from orders.models import *
 from offer.models import Coupon
 from .tables import *
-from .forms import *
-from .models import *
 from users.models import Maintance
+from .forms import *
 
 # Create your views here.
 @staff_member_required(login_url=reverse_lazy('login'))
@@ -55,7 +54,7 @@ class AllProducts(SingleTableView):
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AddProducts(SuccessMessageMixin, CreateView):
 	form_class = AddProduct
-	template_name = "form_view.html"
+	template_name = "form_view1.html"
 	success_url = reverse_lazy('products_list')
 	success_message = "%(name)s successfully created"
 
@@ -65,7 +64,7 @@ class AddProducts(SuccessMessageMixin, CreateView):
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class UpdateProducts(SuccessMessageMixin, UpdateView):
 	form_class = AddProduct
-	template_name = "form_view.html"
+	template_name = "form_view1.html"
 	success_url = reverse_lazy('products_list')
 	success_message = "%(name)s successfully updated"
 
@@ -103,7 +102,7 @@ class UpdateProductClass(SuccessMessageMixin, UpdateView):
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AllCategories(SingleTableView):
-	queryset = Category.objects.all()
+	queryset = Category.objects.filter()
 	template_name = 'list_view.html'
 	table_class = CategoryTable
 
@@ -111,20 +110,19 @@ class AllCategories(SingleTableView):
 class UpdateCategory(SuccessMessageMixin, UpdateView):
 	template_name = "form_view.html"
 	model = Category
-	fields = "__all__"
+	# fields = "__all__"
+	form_class = CategoryForm
 	success_message = "%(name)s successfully updated"
 	success_url = reverse_lazy('categories-list')
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AddCategories(SuccessMessageMixin, CreateView):
-	model = Category
-	fields = ("name", "parent", "img")
+	# model = Category
+	# fields = ('name', 'parent', 'img')
+	form_class = CategoryForm
 	template_name = "form_view.html"
 	success_url = reverse_lazy('categories-list')
 	success_message = "%(name)s successfully created"
-
-def editCategories(request):
-	return render(request, 'edit-categories.html')
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class DeleteCategory(DeleteView):
