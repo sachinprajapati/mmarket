@@ -160,8 +160,9 @@ class CouponForm(forms.ModelForm):
 
 class CategoryForm(forms.ModelForm):
     cursor = connection.cursor()
-    cursor.execute("""SELECT a.id, CASE WHEN b.id is not null THEN CONCAT(b.name , ' > ', a.name) ELSE a.name END FROM products_category AS a LEFT JOIN products_category AS b on a.parent_id = b.id order by (CASE WHEN b.id is not null THEN b.name END , a.name)""")
-    CHOICE_LIST = cursor.fetchall()
+    cursor.execute("""SELECT a.id, CASE WHEN b.id IS NOT NULL THEN CONCAT(b.name , ' > ', a.name) ELSE a.name END as category FROM products_category AS a LEFT JOIN products_category AS b 
+on a.parent_id = b.id order by CASE WHEN b.id is not null THEN b.name END, a.name;""")
+    CHOICE_LIST = list(cursor.fetchall())
     CHOICE_LIST.insert(0, ('', '----'))
     parent = forms.ChoiceField(choices=CHOICE_LIST, required=False)
     class Meta:
