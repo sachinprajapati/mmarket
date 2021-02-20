@@ -83,6 +83,7 @@ class WalletHistoryView(generics.ListAPIView):
 class DebugView(generics.RetrieveAPIView):
 	model = Maintance
 	serializer_class = DebugSerializer
+	queryset = Maintance.objects.filter()
 
 	def get_object(self):
 		if self.model.objects.filter(status__isnull=False).exists():

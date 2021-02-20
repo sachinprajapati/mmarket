@@ -114,16 +114,18 @@ class PincodeAvailView(generics.RetrieveAPIView):
 class TrackOrder(generics.RetrieveAPIView):
     model = Orders
     serializer_class = TrackOrderSerializer
+    queryset = Orders.objects.filter()
 
     def get_object(self):
         return get_object_or_404(Orders, pk=self.kwargs['pk'], customer=self.request.user)
 
-    def get_queryset(self):
-        return self.get_object()
-
 class CancelOrder(generics.CreateAPIView):
     model = OrderStatus
     serializer_class = CancelOrderSerializer
+    queryset = OrderStatus.objects.filter()
+
+    def get_object(self):
+        return get_object_or_404(Orders, pk=self.kwargs['pk'])
 
     def post(self, request, *args, **kwargs):
         print(self.request.user)
