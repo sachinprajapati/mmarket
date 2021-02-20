@@ -22,27 +22,23 @@ class AddProduct(forms.ModelForm):
             Row(
                 Column('name', css_class='form-group col-6 mb-0'),
                 Column('upc', css_class='form-group col-6 mb-0'),
-                Column('order', css_class=''),
                 css_class='form-row'
             ),
             Row(
                 Column('description', css_class='form-group col-8 mb-0'),
                 Column('attributes', css_class='form-group col-4 mb-0'),
-                Column('order', css_class=''),
                 css_class='form-row'
             ),
             Row(
                 Column('product_class', css_class='form-group col-4 mb-0'),
                 Column('categories', css_class='form-group col-4 mb-0'),
                 Column('is_public', css_class='form-group col-4 mb-0'),
-                Column('order', css_class=''),
                 css_class='form-row'
             ),
             Row(
                 Column('mrp', css_class='form-group col-4 mb-0'),
                 Column('price', css_class='form-group col-4 mb-0'),
                 Column('is_discountable', css_class='form-group col-4 mb-0'),
-                Column('order', css_class=''),
                 css_class='form-row'
             ),
             Submit('submit', 'Submit', css_class='btn btn-primary')
@@ -158,13 +154,23 @@ class CouponForm(forms.ModelForm):
         model = Coupon
         fields = "__all__"
 
+def db_table_exists(table, cursor=None):
+    try:
+        # table_names = connection.introspection.get_table_list(cursor)
+        table_names = connection.introspection.get_table_list(cursor)
+    except Exception as e:
+        print(e)
+    else:
+        return table._meta.db_table in [t.name for t in table_names]
+
 class CategoryForm(forms.ModelForm):
     cursor = connection.cursor()
-    cursor.execute("""SELECT a.id, CASE WHEN b.id IS NOT NULL THEN CONCAT(b.name , ' > ', a.name) ELSE a.name END as category FROM products_category AS a LEFT JOIN products_category AS b 
-on a.parent_id = b.id order by CASE WHEN b.id is not null THEN b.name END, a.name;""")
-    CHOICE_LIST = list(cursor.fetchall())
-    CHOICE_LIST.insert(0, ('', '----'))
-    parent = forms.ChoiceField(choices=CHOICE_LIST, required=False)
+    if db_table_exists(Category, cursor):
+        cursor.execute("""SELECT a.id, CASE WHEN b.id IS NOT NULL THEN CONCAT(b.name , ' > ', a.name) ELSE a.name END as category FROM products_category AS a LEFT JOIN products_category AS b
+    on a.parent_id = b.id order by CASE WHEN b.id is not null THEN b.name END, a.name;""")
+        CHOICE_LIST = list(cursor.fetchall())
+        CHOICE_LIST.insert(0, ('', '----'))
+        parent = forms.ChoiceField(choices=CHOICE_LIST, required=False)
     class Meta:
         model = Category
         fields = ('name', 'parent', 'img')

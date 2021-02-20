@@ -5,7 +5,8 @@ from products.models import Category, Product, ProductClass
 from orders.models import Orders, ORDER_STATUS, OrderStatus
 
 import django_tables2 as tables
-from django_filters import rest_framework as filters, NumberFilter, ChoiceFilter
+from django_filters import rest_framework as filters, NumberFilter, ChoiceFilter, DateFilter, DateFromToRangeFilter
+from django_filters.widgets import RangeWidget, DateRangeWidget
 from django.contrib.auth import get_user_model
 User = get_user_model()
 import itertools
@@ -92,6 +93,8 @@ USER_STATUS = [
 
 class UsersFilter(filters.FilterSet):
     is_active = ChoiceFilter(choices=USER_STATUS)
+    # date_joined__lt = DateFilter(field_name='date_joined', lookup_expr='lt', label='Joined Before')
+    date_joined = DateFromToRangeFilter(widget=DateRangeWidget(attrs={'placeholder': 'MM/DD/YYYY'}))
     class Meta:
         model = User
         attrs = {"class": "table table-hover table-bordered table-sm"}
@@ -114,16 +117,20 @@ class UserList(tables.Table):
 class BannerTables(tables.Table):
     get_update_url = tables.Column(verbose_name="Edit", orderable=False)
     img = tables.Column(orderable=False)
+    get_delete_url = tables.Column(orderable=False, verbose_name='Delete')
     class Meta:
         model = Banner
         attrs = {"class": "table table-hover table-bordered table-sm"}
-        fields = ("img", "caption", "order", "get_update_url")
+        fields = ("img", "caption", "order", "get_update_url", "get_delete_url")
 
     def render_img(self, value):
          return mark_safe('<img src="%s" width="200px;">' % escape(value.url))
 
     def render_get_update_url(self, value):
         return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))
+
+    def render_get_delete_url(self, value):
+        return mark_safe('<a href="%s" onclick="YNconfirm(); return false;"><span class="fa fa-trash"></span></a>' % escape(value))
 
 class AvailableAddressTable(tables.Table):
     get_update_url = tables.Column(verbose_name="Edit", orderable=False)

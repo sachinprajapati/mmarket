@@ -67,6 +67,6 @@ def DCRG(request):
 from admins.models import Banner
 
 class BannerListView(generics.ListAPIView):
-	queryset = Banner.objects.filter().order_by("order")
+	queryset = Banner.objects.filter(is_active=True).order_by("order")
 	serializer_class = ListBannerSerializer
 	permission_classes = [permissions.AllowAny]

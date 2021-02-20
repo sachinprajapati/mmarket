@@ -39,6 +39,7 @@ urlpatterns = [
     path('banners-list/', AllBanner.as_view(), name="banners_list"),
     path('add-banner/', AddBanner.as_view(), name="add_banner"),
     path('update-banner/<int:pk>/', UpdateBanner.as_view(), name="update_banner"),
+    path('delete-banner/<int:pk>/', DeleteBanner.as_view(), name="delete_banner"),
     # pincode
     path('pincode-list/', PincodeList.as_view(), name="pincode_list"),
     path('add-pincode/', AddPincode.as_view(), name="add_pincode"),

@@ -1,0 +1,2 @@
+./manage.py dumpdata --exclude=auth --exclude=contenttypes --exclude=users.wallet --exclude=users.wallethistory --exclude=basket.cart --exclude=basket.cartline --exclude=orders.address --exclude=orders.orders --exclude=orders.orderitems --exclude=orders.orderstatus --exclude=orders.orderpayment > alldata.json
+

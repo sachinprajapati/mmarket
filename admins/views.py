@@ -260,6 +260,12 @@ class UpdateBanner(SuccessMessageMixin, UpdateView):
 	success_message = "Banner Successfully Updated"
 	success_url = reverse_lazy("banners_list")
 
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class DeleteBanner(DeleteView):
+	model = Banner
+	success_url = reverse_lazy('banners_list')
+	template_name = 'banner_confirm_delete.html'
+
 # Pincode
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
