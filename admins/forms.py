@@ -60,7 +60,7 @@ class OrderStatusForm(forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 Column('order_id', css_class='form-group col-4 mb-0'),
-                Column('AddProduct', css_class='form-group col-4 mb-0'),
+                Column('status', css_class='form-group col-4 mb-0'),
                 Column('expected_datetime', css_class='form-group col-4 mb-0'),
                 Column('order', css_class=''),
                 css_class='form-row'
