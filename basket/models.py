@@ -14,7 +14,6 @@ class CartLine(models.Model):
     quantity = models.PositiveIntegerField(_('Quantity'), default=1)
     price = models.FloatField(blank=True)
     discount = models.FloatField(default=0)
-    save = models.BooleanField(default=False, verbose_name=_('Save For Later'))
     date_created = models.DateTimeField(_("Date Created"), auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(_("Date Updated"), auto_now=True, db_index=True)
 
@@ -26,3 +25,11 @@ class CartLine(models.Model):
     def save(self, *args, **kwargs):
         self.price = self.product.price*self.quantity
         super(CartLine, self).save(*args, **kwargs)
+
+class WishList(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    dt = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'product']

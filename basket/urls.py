@@ -5,6 +5,7 @@ from .views import *
 
 router = routers.DefaultRouter()
 router.register(r'cart', CartViewSet)
+router.register(r'wishlist', WishListViewSet)
 
 
 urlpatterns = [

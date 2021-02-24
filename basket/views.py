@@ -2,15 +2,15 @@ from django.shortcuts import render, get_object_or_404, Http404
 from rest_framework import permissions, status, viewsets, generics
 from rest_framework.response import Response
 
-from .models import Cart, CartLine
+from .models import Cart, CartLine, WishList
 from products.models import Product
-from .serializers import AddCartSerializer, ListCartSerializer
+from .serializers import AddCartSerializer, ListCartSerializer, WishListSerializer
 
 class CartViewSet(viewsets.ViewSet):
-    queryset = CartLine.objects.all()
+    queryset = CartLine.objects.filter()
 
     def list(self, request):
-        queryset = CartLine.objects.filter(cart=request.user.cart)
+        queryset = self.queryset.filter(cart=request.user.cart)
         serializer = ListCartSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -53,5 +53,37 @@ class CartViewSet(viewsets.ViewSet):
             instance = get_object_or_404(CartLine, product_id=kwargs['pk'], cart=request.user.cart)
             instance.delete()
         except Http404:
-            pass
+            raise Http404
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class WishListViewSet(viewsets.ModelViewSet):
+    model = WishList
+    queryset = model.objects.filter()
+    serializer_class = WishListSerializer
+    http_method_names = ['get', 'post', 'delete']
+
+    def list(self, request):
+        queryset = self.queryset.filter(user=request.user)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        data = request.data
+        data['user'] = self.request.user.pk
+        if self.model.objects.filter(**data).exists():
+            return Response({'product': ['product already exists in wishlist']}, status=status.HTTP_400_BAD_REQUEST)
+        serialier = self.serializer_class(data=data)
+        if serialier.is_valid():
+            serialier.save()
+            return Response(serialier.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serialier.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = get_object_or_404(WishList, product=kwargs['pk'], user=request.user)
+            instance.delete()
+        except Http404:
+            raise Http404
+        return Response(status=status.HTTP_204_NO_CONTENT)
+

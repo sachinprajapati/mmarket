@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Cart, CartLine
+from .models import Cart, CartLine, WishList
 
 from products.serializers import ListProductSerializer
 
@@ -8,7 +8,7 @@ class AddCartSerializer(serializers.ModelSerializer):
     quantity = serializers.IntegerField(default=1)
     class Meta:
         model = CartLine
-        fields = ('product', 'quantity', 'cart')
+        fields = ('product', 'quantity', 'cart', 'wishlist')
         # fields = "__all__"
 
 class ListCartSerializer(serializers.ModelSerializer):
@@ -17,8 +17,7 @@ class ListCartSerializer(serializers.ModelSerializer):
         model = CartLine
         fields = ('product', 'quantity', 'price')
 
-# class UpdateCartSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = CartLine
-#         fields = ('prouct', 'quantity')
-
+class WishListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WishList
+        fields = ('product', 'user')

@@ -86,15 +86,14 @@ class OrdersTable(tables.Table):
         return mark_safe('<a href="%s"><span>%s</span></a>' % (escape(value.get_absolute_url()), escape(value.name)))
 
 USER_STATUS = [
-    ('', "All"),
     (True, "Active"),
     (False, "Inactive")
 ]
 
 class UsersFilter(filters.FilterSet):
+    date_joined = DateFromToRangeFilter(widget=DateRangeWidget(attrs={'placeholder': 'MM/DD/YYYY', 'type': 'date'}))
     is_active = ChoiceFilter(choices=USER_STATUS)
     # date_joined__lt = DateFilter(field_name='date_joined', lookup_expr='lt', label='Joined Before')
-    date_joined = DateFromToRangeFilter(widget=DateRangeWidget(attrs={'placeholder': 'MM/DD/YYYY'}))
     class Meta:
         model = User
         attrs = {"class": "table table-hover table-bordered table-sm"}

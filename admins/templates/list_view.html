@@ -4,25 +4,14 @@
 
 {% block content %}
     <style>
-    tbody svg{
-        color: grey;
+    form{
+        margin-bottom: 20px;
     }
-    .asc a{
-        position:relative;
+    form .form-control{
+        margin-right: 5px;
     }
-    .asc a:before {
-        content: "\f000";
-        font-family: FontAwesome;
-        font-style: normal;
-        font-weight: normal;
-        text-decoration: inherit;
-    /*--adjust as necessary--*/
-        color: #000;
-        font-size: 18px;
-        padding-right: 0.5em;
-        position: absolute;
-        top: 10px;
-        left: 0;
+    td > a{
+        color: #5a5050;
     }
     </style>
     <div class="card mb-4">
@@ -44,4 +33,15 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+    $(document).ready(function () {
+        var a = $('.asc > a');
+        a.after('<span class="fa fa-long-arrow-alt-up fa-xs float-right" style="margin-top:5px;"></span>');
+        var a = $('.desc > a');
+        a.after('<span class="fa fa-long-arrow-alt-down fa-xs float-right" style="margin-top:5px;"></span>');
+    });
+    </script>
 {% endblock %}
