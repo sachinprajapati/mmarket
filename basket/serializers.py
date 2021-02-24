@@ -17,7 +17,13 @@ class ListCartSerializer(serializers.ModelSerializer):
         model = CartLine
         fields = ('product', 'quantity', 'price')
 
-class WishListSerializer(serializers.ModelSerializer):
+class AddWishSerializer(serializers.ModelSerializer):
     class Meta:
         model = WishList
         fields = ('product', 'user')
+
+class WishListSerializer(serializers.ModelSerializer):
+    product = ListProductSerializer()
+    class Meta:
+        model = WishList
+        fields = ('product', )

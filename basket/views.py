@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from .models import Cart, CartLine, WishList
 from products.models import Product
-from .serializers import AddCartSerializer, ListCartSerializer, WishListSerializer
+from .serializers import AddCartSerializer, ListCartSerializer, AddWishSerializer, WishListSerializer
 
 class CartViewSet(viewsets.ViewSet):
     queryset = CartLine.objects.filter()
@@ -59,12 +59,12 @@ class CartViewSet(viewsets.ViewSet):
 class WishListViewSet(viewsets.ModelViewSet):
     model = WishList
     queryset = model.objects.filter()
-    serializer_class = WishListSerializer
+    serializer_class = AddWishSerializer
     http_method_names = ['get', 'post', 'delete']
 
     def list(self, request):
         queryset = self.queryset.filter(user=request.user)
-        serializer = self.serializer_class(queryset, many=True)
+        serializer = WishListSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def create(self, request):
