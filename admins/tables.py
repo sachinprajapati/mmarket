@@ -9,7 +9,6 @@ from django_filters import rest_framework as filters, NumberFilter, ChoiceFilter
 from django_filters.widgets import RangeWidget, DateRangeWidget
 from django.contrib.auth import get_user_model
 User = get_user_model()
-import itertools
 
 from .models import Banner, AvailableAddress
 from offer.models import Coupon
@@ -45,7 +44,7 @@ class ProductCLassTable(tables.Table):
     class Meta:
         model = ProductClass
         attrs = {"class": "table table-hover table-bordered table-sm"}
-        fields = ("name", "price", "product_class", "categories", "get_update_url")
+        fields = ("name", "require_shipping", "track_stock")
 
     def render_get_update_url(self, value):
         return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))

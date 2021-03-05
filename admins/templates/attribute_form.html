@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load breadcrumb %}
+
+{% block head %}{{ form.media }}{% endblock %}
+
+
+{% block content %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for a in att %}
+            <div class="col-3">
+                <div class="form-group">
+                    <label>{{ a.attribute.name|title }}</label>
+                    <input type="{% field_type a.attribute.type %}" name="{{ a.attribute.pk }}" class="form-control" value="{% AtrributeValue a %}">
+                </div>
+            </div>
+        {% endfor %}
+        <input type="submit" class="btn btn-primary">
+    </form>
+{% endblock %}

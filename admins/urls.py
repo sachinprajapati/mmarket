@@ -17,8 +17,12 @@ urlpatterns = [
     path('add-products/', AddProducts.as_view(), name="add_products"),
     path('product-images/<int:pk>/', AddProductsImages, name="add_product_images"),
     path('edit-products/<int:pk>/', UpdateProducts.as_view(), name="update_products"),
+    #stock
     path('add-stock/<int:pk>/', AddProductStock.as_view(), name="product_stock"),
     path('update-stock/<int:pk>/', UpdateProductStock.as_view(), name="update_stock"),
+    #Attribute
+    path('add-attribute/<int:pk>/', AddProductsAttribute, name="product_attribute"),
+    # path('update-attribute/<int:pk>/', UpdateProductStock.as_view(), name="update_stock"),
     # ProductsClass
     path('product-class-list/', AllProductClass.as_view(), name="product_class_list"),
     path('add-product-class/', AddProductClass.as_view(), name="add_product_class"),

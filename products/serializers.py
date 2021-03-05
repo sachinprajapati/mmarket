@@ -15,6 +15,11 @@ class ProductAttributeSerializer(serializers.ModelSerializer):
 		model = ProductAttribute
 		fields = ('name', 'code', 'set_value')
 
+class ProductAttributeValueSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = ProductAttributeValue
+		exclude = ('id', 'product')
+
 class ProductValueSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ProductAttributeValue
@@ -34,7 +39,8 @@ class ListProductSerializer(serializers.ModelSerializer):
 class DetailProductSerializer(serializers.ModelSerializer):
 	images = ProductImageSerializer(read_only=True, many=True)
 	categories = CategorySerializer(read_only=True, many=True)
-	attributes = ProductAttributeSerializer(read_only=True, many=True)
+	# attributes = ProductAttributeSerializer(read_only=True, many=True)
+	attributes = serializers.SerializerMethodField()
 	description = serializers.SerializerMethodField()
 	stockrecord = serializers.SerializerMethodField()
 
@@ -47,6 +53,13 @@ class DetailProductSerializer(serializers.ModelSerializer):
 			if instance.stockrecord.num_in_stock-instance.stockrecord.num_allocated>0:
 				return True
 		return False
+
+	def get_attributes(self, instance):
+		ls = []
+		for i in instance.attributes.all():
+			value = ProductAttributeValue.objects.get(attribute=i, product=self.instance)
+			ls.append({'name': i.name, 'code': i.code, 'value': getattr(value, 'value_'+i.type)})
+		return ls
 
 	class Meta:
 	    model = Product

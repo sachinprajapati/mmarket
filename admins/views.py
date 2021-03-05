@@ -157,11 +157,49 @@ def AddProductsImages(request, pk):
 				instance.product = product
 			formset.save()
 			messages.success(request, 'product images successfully updated')
-			return redirect(reverse_lazy('product_stock', kwargs={'pk': product.pk}))
+			if hasattr(product, 'stockrecord'):
+				return redirect(reverse_lazy('product_attribute', kwargs={'pk': product.pk}))
+			return redirect(reverse_lazy('product_attribute', kwargs={'pk': product.pk}))
 	return render(request, template_name, {
 		'formset': formset,
 		'product': product,
 	})
+
+@staff_member_required(login_url=reverse_lazy('login'))
+def AddProductsAttribute(request, pk):
+	product = get_object_or_404(Product, pk=pk)
+	att = ProductAttributeValue.objects.filter(attribute__in=product.product_class.productattribute_set.all(), product=product)
+	print("att is",att)
+	if not att:
+		if hasattr(product, 'stockrecord'):
+			return HttpResponseRedirect(reverse_lazy('update_stock', kwargs={'pk': product.pk}))
+		return HttpResponseRedirect(reverse_lazy('product_stock', kwargs={'pk': product.pk}))
+	if request.method == "POST":
+		data = request.POST
+		for i,j in data.items():
+			if i != 'csrfmiddlewaretoken':
+				attr = att.get(attribute__id=i)
+				field_type = 'value_'+attr.attribute.type
+				epv = ProductAttributeValue.objects.filter(attribute=attr.attribute, product=product)
+				if epv.exists():
+					epv.update(**{field_type: j})
+				else:
+					dc = {'attribute_id': attr.pk, 'product_id': product.pk, field_type: j}
+					pv = ProductAttributeValue(**dc)
+					print("pv is", pv)
+					pv.save()
+
+		messages.success(request, 'Product attribute successfully added')
+		if hasattr(product, 'stockrecord'):
+			return HttpResponseRedirect(reverse_lazy('update_stock', kwargs={'pk': product.pk}))
+		return HttpResponseRedirect(reverse_lazy('product_stock', kwargs={'pk': product.pk}))
+	context = {
+		'att': att,
+		'product': product
+	}
+	if request.method == "POST":
+		pass
+	return render(request, 'attribute_form.html', context)
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AddProductStock(SuccessMessageMixin, CreateView):

@@ -1,14 +1,14 @@
 from django.db import models
 from autoslug import AutoSlugField
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse_lazy
+
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
-from django.urls import reverse_lazy
 
 from djrichtextfield.models import RichTextField
 
 def directory_path(instance, filename):
-    print(instance, dir(instance._meta))
     return '{0}/{1}/{2}'.format(instance._meta.db_table.split('_')[1], instance.get_slug(), filename)
 
 class Category(models.Model):
@@ -26,14 +26,6 @@ class Category(models.Model):
 
     def get_slug(self):
         return self.slug
-
-    # def __str__(self):
-    #     full_path = [self.name]
-    #     k = self.parent
-    #     while k is not None:
-    #         full_path.append(k.name)
-    #         k = k.parent
-    #     return ' -> '.join(full_path[::-1])
 
     def __str__(self):
         return self.name
@@ -56,6 +48,9 @@ class ProductClass(models.Model):
     @property
     def has_attributes(self):
         return self.attributes.exists()
+
+    def get_update_url(self):
+        return reverse_lazy('update_product_class', kwargs={'pk': self.pk})
 
 class ProductAttribute(models.Model):
     name = models.CharField(max_length=255)
@@ -86,6 +81,13 @@ class ProductAttribute(models.Model):
     @property
     def set_value(self):
         return getattr(self.productattributevalue, 'value_'+self.type)
+
+    def get_field(self):
+        html = '<input type="%s" name="%s" class="form-control" required>'
+        if self.type == 'text':
+            return mark_safe(html % (self.type, self.id))
+        if self.type == 'integer':
+            return mark_safe(html % ('number', self.id))
 
 class ProductAttributeValue(models.Model):
     attribute = models.ForeignKey(ProductAttribute, on_delete=models.CASCADE,verbose_name=_("Attribute"))
@@ -136,7 +138,6 @@ class Product(models.Model):
 
     def get_stock_url(self):
         if not hasattr(self, 'stockrecord'):
-            print("in if")
             return mark_safe('<a href="%s"><span class="fa fa-plus"></span></a>' % escape(reverse_lazy('product_stock', kwargs={'pk': self.pk})))
         else:
             return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(reverse_lazy('update_stock', kwargs={'pk': self.stockrecord.pk})))
