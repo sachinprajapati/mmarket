@@ -168,7 +168,10 @@ def AddProductsImages(request, pk):
 @staff_member_required(login_url=reverse_lazy('login'))
 def AddProductsAttribute(request, pk):
 	product = get_object_or_404(Product, pk=pk)
-	att = ProductAttributeValue.objects.filter(attribute__in=product.product_class.productattribute_set.all(), product=product)
+	if hasattr(product.product_class, 'productattribute_set'):
+		att = ProductAttributeValue.objects.filter(attribute__in=product.product_class.productattribute_set.all(), product=product)
+	else:
+		att = None
 	print("att is",att)
 	if not att:
 		if hasattr(product, 'stockrecord'):
