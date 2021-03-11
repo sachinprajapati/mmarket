@@ -5,7 +5,7 @@ from products.models import Category, Product, ProductClass
 from orders.models import Orders, ORDER_STATUS, OrderStatus
 
 import django_tables2 as tables
-from django_filters import rest_framework as filters, NumberFilter, ChoiceFilter, DateFilter, DateFromToRangeFilter
+from django_filters import rest_framework as filters, NumberFilter, ChoiceFilter, CharFilter, DateFromToRangeFilter
 from django_filters.widgets import RangeWidget, DateRangeWidget
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -38,6 +38,12 @@ class ProductTable(tables.Table):
 
     def render_get_update_url(self, value):
         return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))
+
+class ProductFilter(filters.FilterSet):
+    name = CharFilter(lookup_expr='icontains')
+    class Meta:
+        model = Product
+        fields = ('name', 'price', 'product_class')
 
 class ProductCLassTable(tables.Table):
     get_update_url  = tables.Column(verbose_name='Edit', orderable=False)

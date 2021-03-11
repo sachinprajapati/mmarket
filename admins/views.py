@@ -46,10 +46,11 @@ def editCustomers(request):
 
 # Products
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
-class AllProducts(SingleTableView):
+class AllProducts(SingleTableMixin, FilterView):
 	queryset = Product.objects.filter()
 	template_name = 'list_view.html'
 	table_class = ProductTable
+	filterset_class = ProductFilter
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class AddProducts(SuccessMessageMixin, CreateView):
