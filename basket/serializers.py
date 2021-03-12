@@ -8,7 +8,7 @@ class AddCartSerializer(serializers.ModelSerializer):
     quantity = serializers.IntegerField(default=1)
     class Meta:
         model = CartLine
-        fields = ('product', 'quantity', 'cart', 'wishlist')
+        fields = ('product', 'quantity', 'cart')
         # fields = "__all__"
 
 class ListCartSerializer(serializers.ModelSerializer):
