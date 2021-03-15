@@ -9,9 +9,8 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.db.models import F
+from django.db.models.aggregates import Max
 from django.forms import modelformset_factory
-from django.forms.utils import ErrorList
-from django import forms
 
 from django_tables2 import SingleTableView, SingleTableMixin
 from django_filters.views import FilterView
@@ -24,14 +23,40 @@ from orders.models import *
 from offer.models import Coupon
 from .tables import *
 from users.models import Maintance
+from basket.models import CartLine
 from .forms import *
+from datetime import date
 
 # Create your views here.
 @staff_member_required(login_url=reverse_lazy('login'))
 def index(request):
-	if request.user.is_staff:
-		return render(request, 'index.html')
-	return render(request, 'index.html')
+	# user = User.objects.filter(is_staff=False, is_superuser=False)
+	user = User.objects.raw("select * from %s" %User._meta.db_table)
+	print('user is', user.columns)
+	order = Orders.objects.filter()
+	product = Product.objects.filter()
+	cw = CartLine.objects.filter()
+	context = {
+		"users": {
+			"total" : len(user),
+			"active": len([i for i in user if i.is_active==True]),
+			"new": len([i for i in user if i.date_joined.date()>=date.today()])
+		},
+		"orders": {
+			"total": order.count(),
+			"pending": len(OrderStatus.StatusWith(0)),
+			"delivered": len(OrderStatus.StatusWith(4))
+		},
+		"products":{
+			"total": product.count(),
+			"out": 10
+		},
+		"cw": {
+			"total": len(cw)
+		}
+	}
+	print(context)
+	return render(request, 'index.html', context)
 
 def notFound(request):
 	return render(request, '404.html')

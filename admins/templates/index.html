@@ -1,5 +1,63 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    <style>
+    .my-card
+    {
+        position:absolute;
+        left:40%;
+        top:-20px;
+        border-radius:50%;
+    }
+    .jumbotron {
+        padding: 2rem 1rem;
+    }
+    </style>
+{% endblock %}
+
 {% block content %}
-    <h1>Hello</h1>
+<div class="jumbotron">
+<div class="row w-100">
+        <div class="col-md-3">
+            <div class="card border-info mx-sm-1 p-3 shadow">
+                <div class="card border-info shadow text-info p-3 my-card" ><span class="fa fa-users" aria-hidden="true"></span></div>
+                <div class="text-info text-center mt-3"><h1>{{ users.total }}</h1></div>
+                <table class="table table-bordered table-sm shadow-sm">
+                    <tr class="text-info text-center"><td>Active</td><td>{{ users.active }}</td></tr>
+                    <tr class="text-info text-center"><td>New</td><td>{{ user.new }}</td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success mx-sm-1 p-3 shadow">
+                <div class="card border-success shadow text-success p-3 my-card"><span class="fa fa-shopping-cart" aria-hidden="true"></span></div>
+                <div class="text-success text-center mt-3"><h1>{{ orders.total }}</h1></div>
+                <table class="table table-bordered table-sm shadow-sm">
+                    <tr class="text-success text-center"><td>Pending</td><td>{{ orders.pending }}</td></tr>
+                    <tr class="text-success text-center"><td>Delivered</td><td>{{ orders.delivered }}</td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-danger mx-sm-1 p-3 shadow">
+                <div class="card border-danger shadow text-danger p-3 my-card" ><span class="fa fa-table" aria-hidden="true"></span></div>
+                <div class="text-danger text-center mt-3"><h1>{{ products.total }}</h1></div>
+                <table class="table table-bordered table-sm shadow-sm">
+                    <tr class="text-danger text-center"><td>Out of Stock</td><td>234</td></tr>
+                    <tr class="text-danger text-center"><td>New</td><td>234</td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning mx-sm-1 p-3 shadow">
+                <div class="card border-warning shadow text-warning p-3 my-card" ><span class="fa fa-shopping-basket" aria-hidden="true"></span></div>
+                <div class="text-warning text-center mt-3"><h1>234</h1></div>
+                <table class="table table-bordered table-sm shadow-sm">
+                    <tr class="text-warning text-center"><td>Cart</td><td>234</td></tr>
+                    <tr class="text-warning text-center"><td>Wishlist</td><td>234</td></tr>
+                </table>
+            </div>
+        </div>
+     </div>
+</div>
 {% endblock %}

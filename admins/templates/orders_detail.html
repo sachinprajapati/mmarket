@@ -34,12 +34,12 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
+    <div class="">
     <div id="ui-view" data-select2-id="ui-view">
         <div>
             <div class="card">
                 <div class="card-header">Invoice
-                    <strong>#BBB-10010110101938</strong>
+                    <strong>{{ order.order_id }}</strong>
                     <a class="btn btn-sm btn-secondary float-right mr-1 d-print-none" href="#" onclick="javascript:window.print();" data-abc="true">
                         <i class="fa fa-print"></i> Print</a>
                     <a class="btn btn-sm btn-info float-right mr-1 d-print-none" href="{% url 'update_orders' order.id %}" data-abc="true">
@@ -69,11 +69,11 @@
                                 <strong>#{{ order.order_id }}</strong>
                             </div>
                             <div>April 30, 2019</div>
-                            <div>VAT: NYC09090390</div>
-                            <div>Account Name: BBBootstrap Inc</div>
-                            <div>
-                                <strong>SWIFT code: 99 8888 7777 6666 5555</strong>
-                            </div>
+{#                            <div>VAT: NYC09090390</div>#}
+{#                            <div>Account Name: BBBootstrap Inc</div>#}
+{#                            <div>#}
+{#                                <strong>SWIFT code: 99 8888 7777 6666 5555</strong>#}
+{#                            </div>#}
                         </div>
                     </div>
                     <div class="table-responsive-sm">

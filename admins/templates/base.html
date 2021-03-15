@@ -11,11 +11,18 @@
         <title>Dashboard</title>
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" rel="stylesheet">
+        <style>
+            nav i{
+                color:#ffffff;
+            }
+            nav a{
+            }
+        </style>
         {% block head %}{% endblock %}
     </head>
     <body class="sb-nav-fixed">
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <a class="navbar-brand" href="{% url 'dashboard' %}">Dashboard</a>
+        <nav class="sb-topnav navbar navbar-expand navbar-light shadow"  style="background-color: #00e6e6;max-height:50px;">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">Mandi Market</a>
             <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
             <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
@@ -43,7 +50,7 @@
         </nav>
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
-                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion"  style="background-color: #00334d;">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
@@ -153,7 +160,7 @@
                 <main>
                     <div class="container-fluid">
                         <h1 class="mt-4">Dashboard</h1>
-                        <ol class="breadcrumb mb-4">
+                        <ol class="breadcrumb mb-4 shadow-sm">
                             <li class="breadcrumb-item active">{% get_breadcrumb request.path %}</li>
                         </ol>
                         {% if messages %}
@@ -173,7 +180,7 @@
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid">
                         <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2020</div>
+                            <div class="text-muted">Copyright &copy; Mandi Market {%  now "Y" %}-{% now "Y" as next_year %}{{ next_year|add:1 }}</div>
                             <div>
                                 <a href="#">Privacy Policy</a>
                                 &middot;

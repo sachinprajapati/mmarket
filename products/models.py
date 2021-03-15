@@ -138,9 +138,9 @@ class Product(models.Model):
 
     def get_stock_url(self):
         if not hasattr(self, 'stockrecord'):
-            return mark_safe('<a href="%s"><span class="fa fa-plus"></span></a>' % escape(reverse_lazy('product_stock', kwargs={'pk': self.pk})))
+            return mark_safe('<a href="%s"><button class="btn btn-info btn-sm shadow-sm" style="background:#41cef1;border:none;"><span class="fa fa-plus"></span></button></a>' % escape(reverse_lazy('product_stock', kwargs={'pk': self.pk})))
         else:
-            return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(reverse_lazy('update_stock', kwargs={'pk': self.stockrecord.pk})))
+            return mark_safe('<a href="%s"><button class="btn btn-light btn-sm shadow-sm"><span class="fa fa-pencil-alt"></span></button></a>' % escape(reverse_lazy('update_stock', kwargs={'pk': self.stockrecord.pk})))
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images', verbose_name=_("Product"))

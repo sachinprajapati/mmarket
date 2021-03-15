@@ -7,6 +7,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.db import connection
 
 from products.models import Product
 
@@ -14,6 +15,14 @@ ADDRESS_TYE = [
     (1, 'Home'),
     (2, 'Office')
 ]
+
+def db_table_exists(table, cursor=None):
+    try:
+        table_names = connection.introspection.get_table_list(cursor)
+    except Exception as e:
+        print(e)
+    else:
+        return table._meta.db_table in [t.name for t in table_names]
 
 class Address(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -127,6 +136,13 @@ class OrderStatus(models.Model):
 
     def __str__(self):
         return 'order {} status {}'.format(self.order, self.get_status_display())
+
+    def StatusWith(status):
+        cursor = connection.cursor()
+        if db_table_exists(OrderStatus, cursor):
+            cursor.execute("""select order_id from orders_orderstatus group by order_id having max(status)=%s;""" % status)
+            return cursor.fetchall()
+        return []
 
 @receiver(post_save, sender=OrderStatus)
 def Commision(sender, instance, created, **kwargs):

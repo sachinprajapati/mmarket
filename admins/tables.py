@@ -26,7 +26,7 @@ class CategoryTable(tables.Table):
         fields = ("name", "parent", "img", "get_update_url")
 
     def render_get_update_url(self, value):
-        return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))
+        return mark_safe('<a href="%s"><button class="btn btn-light btn-sm shadow-sm"><span class="fa fa-pencil-alt"></span></button></a>' % escape(value))
 
 class ProductTable(tables.Table):
     get_update_url  = tables.Column(verbose_name='Edit', orderable=False)
@@ -37,7 +37,7 @@ class ProductTable(tables.Table):
         fields = ("name", "price", "product_class", "categories", "get_update_url", "get_stock_url")
 
     def render_get_update_url(self, value):
-        return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))
+        return mark_safe('<a href="%s"><button class="btn btn-light btn-sm shadow-sm"><span class="fa fa-pencil-alt"></span></button></a>' % escape(value))
 
 class ProductFilter(filters.FilterSet):
     name = CharFilter(lookup_expr='icontains')
@@ -54,7 +54,7 @@ class ProductCLassTable(tables.Table):
         fields = ("name", "require_shipping", "track_stock")
 
     def render_get_update_url(self, value):
-        return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))
+        return mark_safe('<a href="%s"><button class="btn btn-light btn-sm shadow-sm"><span class="fa fa-pencil-alt"></span></button></a>' % escape(value))
 
 class OrdersFilter(filters.FilterSet):
     amount__gt = NumberFilter(field_name='amount', lookup_expr='gt')
@@ -86,7 +86,7 @@ class OrdersTable(tables.Table):
         fields = ("order_id", "amount", "get_CurrentStatus", "product_count", "quantities", "get_absolute_url")
 
     def render_get_absolute_url(self, value):
-        return mark_safe('<a href="%s"><span class="fa fa-info-circle"></span></a>' % escape(value))
+        return mark_safe('<a href="%s"><button class="btn btn-warning btn-sm shadow-sm"><span class="fa fa-info-circle"></span></button></a>' % escape(value))
 
     def render_customer(self, value):
         return mark_safe('<a href="%s"><span>%s</span></a>' % (escape(value.get_absolute_url()), escape(value.name)))
@@ -117,7 +117,7 @@ class UserList(tables.Table):
         fields = ("name", "phone", "email", "is_active", "parent", "date_joined", "get_absolute_url")
 
     def render_get_absolute_url(self, value):
-        return mark_safe('<a href="%s"><span class="fa fa-info-circle"></span></a>' % escape(value))
+        return mark_safe('<a href="%s"><button class="btn btn-warning btn-sm shadow-sm"><span class="fa fa-info-circle"></span></button></a>' % escape(value))
 
 class BannerTables(tables.Table):
     get_update_url = tables.Column(verbose_name="Edit", orderable=False)
@@ -132,7 +132,7 @@ class BannerTables(tables.Table):
          return mark_safe('<img src="%s" width="200px;">' % escape(value.url))
 
     def render_get_update_url(self, value):
-        return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))
+        return mark_safe('<a href="%s"><button class="btn btn-light btn-sm shadow-sm"><span class="fa fa-pencil-alt"></span></button></a>' % escape(value))
 
     def render_get_delete_url(self, value):
         return mark_safe('<a href="%s" onclick="YNconfirm(); return false;"><span class="fa fa-trash"></span></a>' % escape(value))
@@ -145,7 +145,7 @@ class AvailableAddressTable(tables.Table):
         fields = ("pincode", )
 
     def render_get_update_url(self, value):
-        return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))
+        return mark_safe('<a href="%s"><button class="btn btn-light btn-sm shadow-sm"><span class="fa fa-pencil-alt"></span></button></a>' % escape(value))
 
 class CouponTables(tables.Table):
     total_discount = tables.Column(orderable=False)
@@ -158,7 +158,7 @@ class CouponTables(tables.Table):
         fields = ('name', 'code', 'discount_type', 'total_discount', 'date_created', 'get_absolute_url')
 
     def render_get_update_url(self, value):
-        return mark_safe('<a href="%s"><span class="fa fa-pencil-alt"></span></a>' % escape(value))
+        return mark_safe('<a href="%s"><button class="btn btn-light btn-sm shadow-sm"><span class="fa fa-pencil-alt"></span></button></a>' % escape(value))
 
     def render_get_absolute_url(self, value):
-        return mark_safe('<a href="%s"><span class="fa fa-info-circle"></span></a>' % escape(value))
+        return mark_safe('<a href="%s"><button class="btn btn-warning btn-sm shadow-sm"><span class="fa fa-info-circle"></span></button></a>' % escape(value))

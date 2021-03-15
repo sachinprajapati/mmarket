@@ -2,7 +2,7 @@
 {% load render_table from django_tables2 %}
 {% load bootstrap3 %}
 
-{% block content %}
+{% block head %}
     <style>
     form{
         margin-bottom: 20px;
@@ -13,8 +13,27 @@
     td > a{
         color: #5a5050;
     }
+    .form-control {
+        border-radius: 8px;
+        box-shadow: 2px 2px 2px #d3d9df;
+    }
+    card > i,span{
+        color: #4e555b;
+    }
+    thead > span{
+        color: #ffffff;
+    }
+    table a {
+        color: #ff6666;
+    }
+    table .fa-info-circle, .fa-pencil-alt, .fa-plus{
+        color: #333333;
+    }
     </style>
-    <div class="card mb-4">
+{% endblock %}
+
+{% block content %}
+    <div class="card mb-4 shadow-sm">
         <div class="card-header">
             <i class="fas fa-table mr-1"></i>
             Categories List
@@ -24,7 +43,7 @@
                 {% if filter %}
                 <form action="" method="get" class="form form-inline">
                     {% bootstrap_form filter.form layout='inline' %}
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary shadow">
                         {% bootstrap_icon "star" %} Filter
                     </button>
                 </form>
