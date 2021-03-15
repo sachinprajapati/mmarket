@@ -85,7 +85,7 @@ class OrderStatusForm(forms.ModelForm):
 class StockRecordForm(forms.ModelForm):
     num_in_stock = forms.IntegerField(disabled=True)
     num_allocated = forms.IntegerField(disabled=True)
-    add_quantity = forms.IntegerField(min_value=1)
+    add_quantity = forms.IntegerField(min_value=1, required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -106,7 +106,7 @@ class StockRecordForm(forms.ModelForm):
 
     def save(self, commit=True):
         m = super(StockRecordForm, self).save(commit=False)
-        if commit:
+        if commit and self.cleaned_data.get('add_quantity'):
             m.num_in_stock += self.cleaned_data['add_quantity']
             m.save()
         return m
