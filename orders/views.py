@@ -60,7 +60,7 @@ class CheckOutView(APIView):
         if not items.exists():
             return Response({"error": "No item selected to checkout"}, status=status.HTTP_404_NOT_FOUND)
         if not data.get("type"):
-            return Response({"type": ["no payment method selected"]})
+            return Response({"type": ["no payment method selected"]}, status=status.HTTP_400_BAD_REQUEST)
         else:
             if data['type'] != 1:
                 return Response({"type": "invalid payment"}, status=status.HTTP_400_BAD_REQUEST)
@@ -70,7 +70,7 @@ class CheckOutView(APIView):
                 if not order.is_valid():
                     return Response(order.errors, status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    amount = items.aggregate(Sum('price'))['price__sum']
+                    amount = items.aggregate(Sum('price'))['price__sum']+20
                     print("amount is", amount)
                     order.save()
                     try:
