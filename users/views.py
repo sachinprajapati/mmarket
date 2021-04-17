@@ -68,7 +68,7 @@ class Downlines(generics.ListAPIView):
 
 	def get_queryset(self):
 		level = self.kwargs['level']
-		if not level in range(1,11):
+		if not level in range(1,16):
 			raise Http404
 		else:
 			return self.request.user.get_downline(level)

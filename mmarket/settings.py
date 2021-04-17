@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'basket',
     'orders',
     'admins',
+    'offer',
     'crispy_forms',
     'rest_framework',
     'rest_framework.authtoken',
@@ -85,10 +86,15 @@ WSGI_APPLICATION = 'mmarket.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mmarket',
+        'USER': 'sachin',
+        'PASSWORD': 'admin123',
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
     }
 }
 
@@ -103,9 +109,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
@@ -148,6 +154,12 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 
 LOGOUT_REDIRECT_URL = '/'
 
+LOGIN_URL = '/'
+
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap4.html"
+
+FILTERS_EMPTY_CHOICE_LABEL = 'All'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
@@ -155,7 +167,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
@@ -174,3 +185,7 @@ DJRICHTEXTFIELD_CONFIG = {
         # 'width': 900
     }
 }
+
+Commision_Rate = 5
+
+Limit_Upline = 15
