@@ -19,8 +19,9 @@ class CartViewSet(viewsets.ViewSet):
         data.update({"cart": request.user.cart.id})
         serializer = AddCartSerializer(data=data)
         if serializer.is_valid():
-            if CartLine.objects.filter(cart=request.user.cart, product__id=data['product']).exists():
-                return Response({"product": ["product already exists"]}, status=status.HTTP_400_BAD_REQUEST)
+            objs = CartLine.objects.filter(cart=request.user.cart, product__id=data['product'])
+            if objs.exists():
+                return Response({"product": ["product already exists"], "count": objs.count()}, status=status.HTTP_400_BAD_REQUEST)
             product = get_object_or_404(Product, pk=data['product'])
             if not hasattr(product, 'stockrecord'):
                 return Response({"product": ["product out of stock"]}, status=status.HTTP_400_BAD_REQUEST)
