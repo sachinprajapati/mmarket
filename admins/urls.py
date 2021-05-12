@@ -61,4 +61,9 @@ urlpatterns = [
     path('coupon-list/', ListCouponView.as_view(), name="coupon_list"),
     path('coupon-update/<int:pk>/', UpdateCouponView.as_view(), name="coupon_update"),
     path('coupon-detail/<int:pk>/', DetailCouponView.as_view(), name="coupon_detail"),
+    path('password/', change_password, name='change_password'),
+    #discount
+    path('discount/<int:pk>/add/', CreateDiscount.as_view(), name='create_discount'),
+    path('discount/<int:pk>/edit/', UpdateDiscount.as_view(), name='update_discount'),
+    path('discount/list/', ListDiscount.as_view(), name='list_discount')
 ]

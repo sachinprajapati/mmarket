@@ -1,7 +1,7 @@
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
 from django.db import connection
-from products.models import Category, Product, ProductClass
+from products.models import Category, Product, ProductClass, ProductDiscount
 from orders.models import Orders, ORDER_STATUS, OrderStatus
 
 import django_tables2 as tables
@@ -31,13 +31,17 @@ class CategoryTable(tables.Table):
 class ProductTable(tables.Table):
     get_update_url  = tables.Column(verbose_name='Edit', orderable=False)
     get_stock_url  = tables.Column(verbose_name='Stock', orderable=False)
+    get_discount_url = tables.Column(verbose_name='Discount', orderable=False)
     class Meta:
         model = Product
         attrs = {"class": "table table-hover table-bordered table-sm"}
-        fields = ("name", "price", "product_class", "categories", "get_update_url", "get_stock_url")
+        fields = ("name", "price", "product_class", "categories", "get_update_url", "get_stock_url", "get_discount_url")
 
     def render_get_update_url(self, value):
         return mark_safe('<a href="%s"><button class="btn btn-light btn-sm shadow-sm"><span class="fa fa-pencil-alt"></span></button></a>' % escape(value))
+
+    def render_get_discount_url(self, value):
+        return mark_safe('<a href="%s"><button class="btn btn-light btn-sm shadow-sm"><span class="fa fa-plus"></span></button></a>' % escape(value))
 
 class ProductFilter(filters.FilterSet):
     name = CharFilter(lookup_expr='icontains')
@@ -72,7 +76,7 @@ class OrdersFilter(filters.FilterSet):
     class Meta:
         model = Orders
         attrs = {"class": "table table-hover table-bordered table-sm"}
-        fields = ("order_id", "status", "customer__phone")
+        fields = ("id", "status", "customer__phone")
 
 class OrdersTable(tables.Table):
     customer = tables.Column(orderable=False)
@@ -83,7 +87,7 @@ class OrdersTable(tables.Table):
     class Meta:
         model = Orders
         attrs = {"class": "table table-hover table-bordered table-sm"}
-        fields = ("order_id", "amount", "get_CurrentStatus", "product_count", "quantities", "get_absolute_url")
+        fields = ("id", "amount", "get_CurrentStatus", "product_count", "quantities", "get_absolute_url")
 
     def render_get_absolute_url(self, value):
         return mark_safe('<a href="%s"><button class="btn btn-warning btn-sm shadow-sm"><span class="fa fa-info-circle"></span></button></a>' % escape(value))
@@ -162,3 +166,24 @@ class CouponTables(tables.Table):
 
     def render_get_absolute_url(self, value):
         return mark_safe('<a href="%s"><button class="btn btn-warning btn-sm shadow-sm"><span class="fa fa-info-circle"></span></button></a>' % escape(value))
+
+class ProductDiscountTable(tables.Table):
+    get_update_url = tables.Column(verbose_name='Edit', orderable=False)
+    # get_stock_url = tables.Column(verbose_name='Stock', orderable=False)
+
+    class Meta:
+        model = ProductDiscount
+        attrs = {"class": "table table-hover table-bordered table-sm"}
+        fields = ("product", "price", "product__price", "fdate", "ldate", "get_update_url")
+
+    def render_get_update_url(self, value):
+        return mark_safe(
+            '<a href="%s"><button class="btn btn-light btn-sm shadow-sm"><span class="fa fa-pencil-alt"></span></button></a>' % escape(
+                value))
+
+class ProductDiscountFilter(filters.FilterSet):
+    product__name = CharFilter(lookup_expr='icontains')
+
+    class Meta:
+        model = ProductDiscount
+        fields = ('product__name', 'price', 'fdate', 'ldate')

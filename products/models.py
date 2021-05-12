@@ -133,6 +133,9 @@ class Product(models.Model):
         if self.images.all():
             return self.images.first().img.url
 
+    def get_discount_url(self):
+        return reverse_lazy('create_discount', kwargs={'pk': self.pk})
+
     def get_update_url(self):
         return reverse_lazy('update_products', kwargs={'pk': self.pk})
 
@@ -167,15 +170,8 @@ class StockRecord(models.Model):
     product = models.OneToOneField(Product, on_delete=models.CASCADE)
     num_in_stock = models.PositiveIntegerField(
         _("Number in stock"))
-    #: The amount of stock allocated to orders but not fed back to the master
-    #: stock system.  A typical stock update process will set the
-    #: :py:attr:`.num_in_stock` variable to a new value and reset
-    #: :py:attr:`.num_allocated` to zero.
     num_allocated = models.IntegerField(
         _("Number allocated"), default=0)
-
-    #: Threshold for low-stock alerts.  When stock goes beneath this threshold,
-    #: an alert is triggered so warehouse managers can order more.
     low_stock_threshold = models.PositiveIntegerField(
         _("Low Stock Threshold"), blank=True, null=True)
     date_created = models.DateTimeField(_("Date created"), auto_now_add=True)
@@ -184,3 +180,15 @@ class StockRecord(models.Model):
 
     def get_available(self, n):
         return (self.num_in_stock-self.num_allocated)>=n
+
+from datetime import date
+
+class ProductDiscount(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    price = models.FloatField(verbose_name=_("Discounted Price"))
+    fdate = models.DateField(default=date.today, verbose_name='From Date')
+    ldate = models.DateField(null=True, blank=True, verbose_name='End Date')
+    dt = models.DateTimeField(auto_now_add=True)
+
+    def get_update(self):
+        return reverse_lazy('update_discount', kwargs={'pk': self.pk})

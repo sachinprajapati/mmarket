@@ -5,6 +5,8 @@ from django.views.generic.detail import DetailView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import login, update_session_auth_hash
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
@@ -31,8 +33,9 @@ from datetime import date
 @staff_member_required(login_url=reverse_lazy('login'))
 def index(request):
 	# user = User.objects.filter(is_staff=False, is_superuser=False)
-	user = User.objects.raw("select * from %s" %User._meta.db_table)
-	print('user is', user.columns)
+	# user = User.objects.raw("select * from %s" %User._meta.db_table)
+	# print('user is', user.columns)
+	user = User.objects.filter(is_staff=False, is_superuser=False)
 	order = Orders.objects.filter()
 	product = Product.objects.filter()
 	cw = CartLine.objects.filter()
@@ -385,6 +388,7 @@ class DetailCouponView(DetailView):
 	model = Coupon
 	template_name = "form_view1.html"
 
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class UpdateDebug(SuccessMessageMixin, UpdateView):
 	model = Maintance
 	success_url = reverse_lazy('dashboard')
@@ -399,3 +403,47 @@ class UpdateDebug(SuccessMessageMixin, UpdateView):
 			obj = self.model.objects.create()
 			obj.save()
 			return obj
+
+@staff_member_required(login_url=reverse_lazy('login'))
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return HttpResponseRedirect(reverse_lazy('dashboard'))
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'form_view.html', {
+        'form': form
+    })
+
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class CreateDiscount(SuccessMessageMixin, CreateView):
+	model = ProductDiscount
+	template_name = 'form_view.html'
+	success_message = 'Discount on product successfully created'
+	success_url = reverse_lazy('list_discount')
+	fields = ('product', 'price', 'fdate', 'ldate')
+
+	def get_initial(self):
+		data = super(CreateDiscount, self).get_initial()
+		print(data)
+		return data
+
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class UpdateDiscount(SuccessMessageMixin, UpdateView):
+	model = ProductDiscount
+	template_name = 'form_view.html'
+	success_message = 'Discount on product successfully updated'
+	success_url = reverse_lazy('list_discount')
+
+@method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
+class ListDiscount(SingleTableMixin, FilterView):
+	model = ProductDiscount
+	template_name = 'list_view.html'
+	table_class = ProductDiscountTable
+	filterset_class = ProductDiscountFilter

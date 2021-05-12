@@ -58,7 +58,7 @@ def Order_ID():
     return now.strftime('%Y%m%d%H%M%S%f')
 
 class Orders(models.Model):
-    order_id = models.CharField(max_length=20, unique=True, default=Order_ID)
+    # order_id = models.CharField(max_length=20, unique=True, default=Order_ID)
     amount = models.IntegerField()
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
@@ -71,6 +71,9 @@ class Orders(models.Model):
 
     def product_count(self):
         return self.orderitems_set.all().count()
+
+    def order_id(self):
+        return self.id
 
     def quantities(self):
         quantities = self.orderitems_set.all().values_list('quantity', flat=True)

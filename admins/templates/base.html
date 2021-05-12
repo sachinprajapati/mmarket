@@ -39,8 +39,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="#">Settings</a>
-                        <a class="dropdown-item" href="#">Activity Log</a>
+                        <a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
                     </div>
@@ -106,6 +105,11 @@
                                     <a class="nav-link" href="{% url 'products_list' %}"><div class="sb-nav-link-icon"><i class="fas fa-list"></i></div> List Product</a>
                                 </nav>
                             </div>
+                            <a class="nav-link collapsed" href="{% url 'list_discount' %}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Discount On Proudct
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
                             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
                                 Setting

@@ -76,15 +76,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def make_commision(self, amount, order):
         tota_com = (amount * Commision_Rate) / 100
-        count = 0
+        # count = 0
+        # user = self.parent if self.parent else None
+        # for i in range(Limit_Upline):
+        #     if user is None:
+        #         break
+        #     count += 1
+        com = tota_com/Limit_Upline
         user = self.parent if self.parent else None
         for i in range(Limit_Upline):
-            if user is None:
-                break
-            count += 1
-        com = tota_com/count
-        user = self.parent if self.parent else None
-        for i in range(count):
             if user is None:
                 break
             wallet, created = Wallet.objects.get_or_create(user=user)
