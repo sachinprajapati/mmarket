@@ -12,6 +12,7 @@ from basket.models import WishList
 from .models import *
 from basket.models import CartLine
 from .serializers import *
+from datetime import date
 
 class CategoryViewSet(generics.ListAPIView):
 	model = Category
@@ -72,4 +73,13 @@ from admins.models import Banner
 class BannerListView(generics.ListAPIView):
 	queryset = Banner.objects.filter(is_active=True).order_by("order")
 	serializer_class = ListBannerSerializer
+	permission_classes = [permissions.AllowAny]
+
+
+today = date.today()
+
+class ProductDiscountView(generics.ListAPIView):
+	model = ProductDiscount
+	serializer_class = ProductDiscountSerializer
+	queryset = model.objects.filter(fdate__lte=today)
 	permission_classes = [permissions.AllowAny]

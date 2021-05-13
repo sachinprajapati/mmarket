@@ -14,5 +14,6 @@ urlpatterns = [
     path('products/', ProductViewSet.as_view()),
     path('product/<int:pk>/', ProductDetailViewSet.as_view()),
     path('banner/', BannerListView.as_view()),
+    path('discount-products/', ProductDiscountView.as_view()),
     path('dcrg-software/', DCRG)
 ]

@@ -69,3 +69,9 @@ class ListBannerSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Banner
 		fields = "__all__"
+
+class ProductDiscountSerializer(serializers.ModelSerializer):
+	product = ListProductSerializer()
+	class Meta:
+		model = ProductDiscount
+		fields = "__all__"
