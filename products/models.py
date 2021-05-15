@@ -144,7 +144,6 @@ class Product(models.Model):
     def get_price(self):
         today = date.today()
         pd = ProductDiscount.objects.filter(models.Q(product=self, fdate__lte=today) & models.Q(models.Q(ldate__isnull=True) | models.Q(ldate__gte=today))).aggregate(discount=models.Sum('price'))
-        print(pd['discount'], self.price)
         return pd['discount'] if pd['discount'] else self.price
 
     def get_stock_url(self):
