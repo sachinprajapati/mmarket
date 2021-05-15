@@ -190,5 +190,5 @@ class ProductDiscount(models.Model):
     ldate = models.DateField(null=True, blank=True, verbose_name='End Date')
     dt = models.DateTimeField(auto_now_add=True)
 
-    def get_update(self):
+    def get_update_url(self):
         return reverse_lazy('update_discount', kwargs={'pk': self.pk})

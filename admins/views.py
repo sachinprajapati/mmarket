@@ -424,19 +424,20 @@ def change_password(request):
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class CreateDiscount(SuccessMessageMixin, CreateView):
 	model = ProductDiscount
+	form_class = ProductDiscountForm
 	template_name = 'form_view.html'
 	success_message = 'Discount on product successfully created'
 	success_url = reverse_lazy('list_discount')
-	fields = ('product', 'price', 'fdate', 'ldate')
 
 	def get_initial(self):
 		data = super(CreateDiscount, self).get_initial()
-		print(data)
+		data['product'] = get_object_or_404(Product, pk=self.kwargs['pk'])
 		return data
 
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class UpdateDiscount(SuccessMessageMixin, UpdateView):
 	model = ProductDiscount
+	form_class = ProductDiscountForm
 	template_name = 'form_view.html'
 	success_message = 'Discount on product successfully updated'
 	success_url = reverse_lazy('list_discount')

@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.db import connection
-from products.models import Product, Category, ProductImage, StockRecord
+from products.models import Product, Category, ProductImage, StockRecord, ProductDiscount
 from orders.models import Orders, OrderStatus
 from offer.models import Coupon
 
@@ -180,3 +180,12 @@ class CategoryForm(forms.ModelForm):
             c = Category.objects.get(pk=self.cleaned_data['parent'])
             return c
         return None
+
+class ProductDiscountForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['product'].widget.attrs['disabled'] = True
+    class Meta:
+        model = ProductDiscount
+        fields = fields = ('product', 'price', 'fdate', 'ldate')

@@ -1,11 +1,12 @@
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
 from django.db import connection
+from django.forms import TextInput
 from products.models import Category, Product, ProductClass, ProductDiscount
 from orders.models import Orders, ORDER_STATUS, OrderStatus
 
 import django_tables2 as tables
-from django_filters import rest_framework as filters, NumberFilter, ChoiceFilter, CharFilter, DateFromToRangeFilter, ModelChoiceFilter
+from django_filters import rest_framework as filters, NumberFilter, ChoiceFilter, CharFilter, DateFromToRangeFilter, ModelChoiceFilter, DateFilter
 from django_filters.widgets import RangeWidget, DateRangeWidget
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -183,6 +184,8 @@ class ProductDiscountTable(tables.Table):
 
 class ProductDiscountFilter(filters.FilterSet):
     product__name = CharFilter(lookup_expr='icontains')
+    fdate = DateFilter(widget=TextInput(attrs={'type': 'date'}))
+    ldate = DateFilter(widget=TextInput(attrs={'type': 'date'}))
 
     class Meta:
         model = ProductDiscount
