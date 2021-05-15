@@ -23,7 +23,7 @@ class CartLine(models.Model):
         ]
 
     def save(self, *args, **kwargs):
-        self.price = self.product.price*self.quantity
+        self.price = self.product.get_price()*self.quantity
         super(CartLine, self).save(*args, **kwargs)
 
 class WishList(models.Model):

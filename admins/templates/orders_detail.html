@@ -93,7 +93,7 @@
                                     <td class="center">{{ forloop.counter }}</td>
                                     <td class="left">{{ i.product.name }}</td>
                                     <td class="center">{{ i.quantity }}</td>
-                                    <td class="right">{{ i.product.price }}</td>
+                                    <td class="right">{{ i.product.get_price }}</td>
                                     <td class="right">{{ i.price }}</td>
                                 </tr>
                             {% endfor %}

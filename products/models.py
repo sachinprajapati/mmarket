@@ -99,6 +99,8 @@ class ProductAttributeValue(models.Model):
     value_date = models.DateField(_('Date'), blank=True, null=True, db_index=True)
     value_datetime = models.DateTimeField(_('DateTime'), blank=True, null=True, db_index=True)
 
+from datetime import date
+
 class Product(models.Model):
     name = models.CharField(max_length=255)
     title = AutoSlugField(populate_from='name')
@@ -138,6 +140,12 @@ class Product(models.Model):
 
     def get_update_url(self):
         return reverse_lazy('update_products', kwargs={'pk': self.pk})
+
+    def get_price(self):
+        today = date.today()
+        pd = ProductDiscount.objects.filter(models.Q(product=self, fdate__lte=today) & models.Q(models.Q(ldate__isnull=True) | models.Q(ldate__gte=today))).aggregate(discount=models.Sum('price'))
+        print(pd['discount'], self.price)
+        return pd['discount'] if pd['discount'] else self.price
 
     def get_stock_url(self):
         if not hasattr(self, 'stockrecord'):

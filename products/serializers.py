@@ -32,9 +32,13 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ListProductSerializer(serializers.ModelSerializer):
 	first_image = serializers.URLField()
+	price = serializers.SerializerMethodField(source='get_price')
 	class Meta:
 	    model = Product
 	    fields = ('id', 'name', 'mrp', 'price', 'first_image', 'is_discountable')
+
+	def get_price(self, instance):
+		return instance.get_price()
 
 class DetailProductSerializer(serializers.ModelSerializer):
 	images = ProductImageSerializer(read_only=True, many=True)
@@ -43,6 +47,7 @@ class DetailProductSerializer(serializers.ModelSerializer):
 	attributes = serializers.SerializerMethodField()
 	description = serializers.SerializerMethodField()
 	stockrecord = serializers.SerializerMethodField()
+	price = serializers.SerializerMethodField(source='get_price')
 
 	def get_description(self, instance):
 		from django.utils.html import strip_tags
@@ -60,6 +65,9 @@ class DetailProductSerializer(serializers.ModelSerializer):
 			value = ProductAttributeValue.objects.get(attribute=i, product=self.instance)
 			ls.append({'name': i.name, 'code': i.code, 'value': getattr(value, 'value_'+i.type)})
 		return ls
+
+	def get_price(self, instance):
+		return instance.get_price()
 
 	class Meta:
 	    model = Product
