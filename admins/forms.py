@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from django.db import connection
+from django.db import connection, models
 from products.models import Product, Category, ProductImage, StockRecord, ProductDiscount
 from orders.models import Orders, OrderStatus
 from offer.models import Coupon
@@ -181,11 +181,22 @@ class CategoryForm(forms.ModelForm):
             return c
         return None
 
+from datetime import date
+
 class ProductDiscountForm(forms.ModelForm):
+    product = forms.ModelChoiceField(queryset=Product.objects.filter(), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['product'].widget.attrs['disabled'] = True
+        self.fields['product'].widget.attrs['readonly'] = True
+
+    def clean(self):
+        data = self.cleaned_data
+        today = date.today()
+        print('data is', data)
+        if ProductDiscount.objects.filter(models.Q(product=data['product'], fdate__lte=today) & models.Q(models.Q(ldate__isnull=True) | models.Q(ldate__gte=today))).exists():
+            raise forms.ValidationError({'product': 'product already exists with discount'})
+        return data
     class Meta:
         model = ProductDiscount
         fields = fields = ('product', 'price', 'fdate', 'ldate')

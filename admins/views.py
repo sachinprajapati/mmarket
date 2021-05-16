@@ -434,6 +434,10 @@ class CreateDiscount(SuccessMessageMixin, CreateView):
 		data['product'] = get_object_or_404(Product, pk=self.kwargs['pk'])
 		return data
 
+	def form_valid(self, form):
+		form.instance.product = get_object_or_404(Product, pk=self.kwargs['pk'])
+		return super(CreateDiscount, self).form_valid(form)
+
 @method_decorator(staff_member_required(login_url=reverse_lazy('login')), name='dispatch')
 class UpdateDiscount(SuccessMessageMixin, UpdateView):
 	model = ProductDiscount
